@@ -60,6 +60,16 @@ enum AchievementID {
 	RECYCLER = 43
 };
 
+enum LibertyCityMinuteState
+{
+	LCM_WAITING_FOR_10HP,
+	LCM_AT_LESS_THAN_10HP,
+	LCM_COMPLETE
+};
+//lcm variables not saved!
+uint8_t lcmState = LCM_WAITING_FOR_10HP;
+uint32_t lcmStartTime;
+
 class AchievementManager
 {
 public:

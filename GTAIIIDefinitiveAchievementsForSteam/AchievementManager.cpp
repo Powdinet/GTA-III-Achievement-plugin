@@ -3,6 +3,7 @@
 #include "CPickups.h"
 #include "CStats.h"
 #include "eWeaponType.h"
+#include "CTimer.h"
 #include "AchievementManager.h"
 
 //achievement list
@@ -427,6 +428,44 @@ void AchievementManager::CheckGangsKillsAchievements()
 void AchievementManager::CheckLibertyCityMinute()
 {
     //TODO: check player health and just count the time. Note: when player is dead the timer doesn't continue. Obviously, timer resets when health is above 10
+    if (!achievementList[LIBERTY_CITY_MINUTE].unlocked)
+    {
+        switch (lcmState)
+        {
+            CPlayerInfo* player = &CWorld::Players[CWorld::PlayerInFocus];
+            case LCM_WAITING_FOR_10HP:
+                
+                if (player->m_nPlayerState == PLAYERSTATE_PLAYING &&
+                    player->m_pPed->m_fHealth < 10.0 &&
+                    player->m_pPed->m_fHealth > 0.0)
+                {
+                    lcmStartTime = CTimer::m_snTimeInMilliseconds;
+                    lcmState = LCM_AT_LESS_THAN_10HP;
+                }
+                //TODO:
+                break;
+            case LCM_AT_LESS_THAN_10HP:
+                if (player->m_nPlayerState == PLAYERSTATE_PLAYING &&
+                    player->m_pPed->m_fHealth < 10.0 &&
+                    player->m_pPed->m_fHealth > 0.0)
+                {
+                    if (CTimer::m_snTimeInMilliseconds - lcmStartTime >= 60000)
+                    {
+                        achievementList[LIBERTY_CITY_MINUTE].unlocked = true;
+                        //TODO add to list of achievements to pop up somehow (events?)
+                        lcmState = LCM_COMPLETE;
+                    }
+                }
+                else
+                {
+                    lcmState = LCM_WAITING_FOR_10HP;
+                }
+                //TODO:
+                break;
+            case LCM_COMPLETE:
+                break;
+        }
+    }
 }
 
 /*
