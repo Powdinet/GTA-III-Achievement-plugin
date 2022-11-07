@@ -67,8 +67,9 @@ enum LibertyCityMinuteState
 	LCM_COMPLETE
 };
 //lcm variables not saved!
-uint8_t lcmState = LCM_WAITING_FOR_10HP;
-uint32_t lcmStartTime;
+static uint8_t lcmState = LCM_WAITING_FOR_10HP;
+static uint32_t lcmStartTime;
+
 
 class AchievementManager
 {

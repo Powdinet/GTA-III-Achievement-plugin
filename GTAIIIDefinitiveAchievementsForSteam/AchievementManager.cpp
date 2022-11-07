@@ -430,9 +430,9 @@ void AchievementManager::CheckLibertyCityMinute()
     //TODO: check player health and just count the time. Note: when player is dead the timer doesn't continue. Obviously, timer resets when health is above 10
     if (!achievementList[LIBERTY_CITY_MINUTE].unlocked)
     {
+        CPlayerInfo* player = &CWorld::Players[CWorld::PlayerInFocus];
         switch (lcmState)
         {
-            CPlayerInfo* player = &CWorld::Players[CWorld::PlayerInFocus];
             case LCM_WAITING_FOR_10HP:
                 
                 if (player->m_nPlayerState == PLAYERSTATE_PLAYING &&
