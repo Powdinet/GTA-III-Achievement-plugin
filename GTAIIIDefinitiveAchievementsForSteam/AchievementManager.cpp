@@ -285,7 +285,6 @@ void AchievementManager::CheckStatBasedAchievements()
         achievementList[RECYCLER].unlocked = true;
         //TODO add to list of achievements to pop up somehow (events?)
     }
-
 }
 
 /*
@@ -294,12 +293,55 @@ void AchievementManager::CheckStatBasedAchievements()
 void AchievementManager::CheckMissionCompleteAchievements()
 {
     //Different check from Definitive, based on REGISTER_MISSION_PASSED strings
-    //TODO: First Day on the Job (Luigi's Girls)
-    //TODO: A Marked Man (Last Requests)
-    //TODO: Offshore Delivery (A Drop in the Ocean)
-    //TODO: Not So Fast (The Exchange)
-    //TODO: A Gift From the King (Kingdom Come)
-    //TODO: Got Any Stories, Old Man? (Cipriani's Chaffeur)
+    const char* lastMission = CStats::LastMissionPassedName;
+
+    //First Day on the Job (Luigi's Girls)
+    if (!achievementList[FIRST_DAY_ON_THE_JOB].unlocked &&
+        !strcmp(lastMission, "LM1"))
+    {
+        achievementList[FIRST_DAY_ON_THE_JOB].unlocked = true;
+        //TODO add to list of achievements to pop up somehow (events?)
+    }
+
+    //A Marked Man (Last Requests)
+    if (!achievementList[A_MARKED_MAN].unlocked &&
+        !strcmp(lastMission, "FM4"))
+    {
+        achievementList[A_MARKED_MAN].unlocked = true;
+        //TODO add to list of achievements to pop up somehow (events?)
+    }
+
+    //Offshore Delivery (A Drop in the Ocean)
+    if (!achievementList[OFFSHORE_DELIVERY].unlocked &&
+        !strcmp(lastMission, "LOVE3"))
+    {
+        achievementList[OFFSHORE_DELIVERY].unlocked = true;
+        //TODO add to list of achievements to pop up somehow (events?)
+    }
+
+    //Not So Fast (The Exchange)
+    if (!achievementList[NOT_SO_FAST].unlocked &&
+        !strcmp(lastMission, "CAT2"))
+    {
+        achievementList[NOT_SO_FAST].unlocked = true;
+        //TODO add to list of achievements to pop up somehow (events?)
+    }
+
+    //A Gift From the King (Kingdom Come)
+    if (!achievementList[A_GIFT_FROM_THE_KING].unlocked &&
+        !strcmp(lastMission, "YD4"))
+    {
+        achievementList[A_GIFT_FROM_THE_KING].unlocked = true;
+        //TODO add to list of achievements to pop up somehow (events?)
+    }
+
+    //Got Any Stories, Old Man? (Cipriani's Chaffeur)
+    if (!achievementList[GOT_ANY_STORIES_OLD_MAN].unlocked &&
+        !strcmp(lastMission, "JM4"))
+    {
+        achievementList[GOT_ANY_STORIES_OLD_MAN].unlocked = true;
+        //TODO add to list of achievements to pop up somehow (events?)
+    }
 
 }
 

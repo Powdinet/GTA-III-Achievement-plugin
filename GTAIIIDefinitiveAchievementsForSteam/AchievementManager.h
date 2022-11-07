@@ -1,5 +1,6 @@
 #pragma once
-#include <string>
+using namespace std;
+#include <string.h>
 
 #define NUM_ACHIEVEMENTS 44
 #define BRIBE_MODEL_ID 115 //TODO: hope this works
@@ -7,9 +8,9 @@
 
 struct AchievementDefinition {
 	//TODO:
-	std::string name;
-	std::string description;
-	std::string image; //TODO: probably raw image file imported at start of plugin
+	string name;
+	string description;
+	string image; //TODO: probably raw image file imported at start of plugin
 	bool unlocked;
 };
 
