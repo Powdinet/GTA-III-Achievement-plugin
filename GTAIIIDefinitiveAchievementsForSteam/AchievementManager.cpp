@@ -1,9 +1,21 @@
 #include <plugin.h>
 #include "CWorld.h"
 #include "CPickups.h"
+#include "CStats.h"
+#include "eWeaponType.h"
 #include "AchievementManager.h"
 
+//achievement list
+AchievementDefinition AchievementManager::achievementList[NUM_ACHIEVEMENTS];
 
+//helper variables
+uint8_t AchievementManager::bribes_pickedup;
+uint8_t AchievementManager::portland_criminals;
+uint8_t AchievementManager::staunton_criminals;
+uint8_t AchievementManager::firefighter_criminals;
+uint8_t AchievementManager::portland_fires;
+uint8_t AchievementManager::staunton_fires;
+uint8_t AchievementManager::firefighter_fires;
 
 void AchievementManager::Init()
 {
@@ -90,33 +102,26 @@ void AchievementManager::Init()
     achievementList[LIBERTY_CITY_SECRETS].name = "Liberty City Secrets";
     achievementList[LIBERTY_CITY_SECRETS].description = "Collect 100 hidden packages";
 
-
     achievementList[IS_THAT_ALL_YOUVE_GOT].name = "Is That All You've Got?";
     achievementList[IS_THAT_ALL_YOUVE_GOT].description = "Achieve 100% completion";
 
     achievementList[KING_OF_LIBERTY_CITY].name = "King of Liberty City";
     achievementList[KING_OF_LIBERTY_CITY].description = "Unlock all achievements";
 
-
     achievementList[GOT_ANY_STORIES_OLD_MAN].name = "Got Any Stories, Old Man?";
     achievementList[GOT_ANY_STORIES_OLD_MAN].description = "Complete \"Cipriani's Chauffeur\"";
-
 
     achievementList[TALKS_A_LOT].name = "Talks a Lot";
     achievementList[TALKS_A_LOT].description = "Complete all phone missions";
 
-
     achievementList[BLOOD_IN_THE_STREETS].name = "Blood in the Streets";
     achievementList[BLOOD_IN_THE_STREETS].description = "Pass all 20 Rampages";
-
 
     achievementList[INSTIGATOR].name = "Instigator";
     achievementList[INSTIGATOR].description = "Complete 10 Rampages";
 
-
     achievementList[CHASING_PAPER].name = "Chasing Paper";
     achievementList[CHASING_PAPER].description = "Amass a fortune of $500, 000";
-
 
     achievementList[AM_WALKIN_HERE].name = "Am Walkin' Here";
     achievementList[AM_WALKIN_HERE].description = "Die from being run over";
@@ -154,6 +159,8 @@ void AchievementManager::Init()
         achievementList[i].unlocked = false;
     }
     //TODO: load in any extra data
+    //TODO: could save extra data in unused global variables so they would be attached to the save files.
+    //Just need to detect new games / save loads properly and save into those areas whenever the variables are updated
 }
 
 void AchievementManager::Save()
@@ -162,27 +169,121 @@ void AchievementManager::Save()
 }
 
 /*
-    Checks achievements based on game stats (17)
+    Checks achievements based on game stats (15)
 */
 void AchievementManager::CheckStatBasedAchievements()
 {
-    //TODO: Disposing of the Evidence (1 car crushed)
-    //TODO: Street Sweeper (100 gang members killed)
-    //TODO: By a Mile (Turismo under 180 seconds)
-    //TODO: Wreckless Driving (Perfect Insane Stunt)
-    //TODO: Wheels Up (20 unique stunt jumps)
-    //TODO: Where to? (100 Fares)
-    //TODO: Man ToyZ (complete every Toyz)
-    //TODO: Playing Doctor (Paramedic level >= 12)
-    //TODO: Right-hand Man (>= 2500 criminal rating)
-    //TODO: Furious First Responder (Paramedic level >= 12, 20 fires and 20 criminals in each island (these last two don't seem to have the variables needed, might need separate checker)
-    //TODO: Liberty City Secrets (100 packages)
-    //TODO: Is That All You've Got? (100% completion)
-    //TODO: Hunting Season (Destroy 5 helis)
-    //TODO: Repeat Offender (20 busts)
-    //TODO: Cheaters do Prosper! (2000 vehicles destroyed)
-    //TODO: Like a Boss (>= 5000 criminal rating)
-    //TODO: Recycler (25 cars crushed)
+    if (!achievementList[DISPOSTING_OF_THE_EVIDENCE].unlocked &&
+        CStats::CarsCrushed >= 1)
+    {
+        achievementList[DISPOSTING_OF_THE_EVIDENCE].unlocked = true;
+        //TODO add to list of achievements to pop up somehow (events?)
+    }
+
+    if (!achievementList[BY_A_MILE].unlocked &&
+        CStats::ElBurroTime < 180)
+    {
+        achievementList[BY_A_MILE].unlocked = true;
+        //TODO add to list of achievements to pop up somehow (events?)
+    }
+
+    if (!achievementList[WRECKLESS_DRIVING].unlocked &&
+        CStats::BestStuntJump > 0 && CStats::BestStuntJump % 2 == 0) //Perfect Stunts all have even values
+    {
+        achievementList[WRECKLESS_DRIVING].unlocked = true;
+        //TODO add to list of achievements to pop up somehow (events?)
+    }
+
+    if (!achievementList[WHEELS_UP].unlocked &&
+        CStats::NumberOfUniqueJumpsFound >= 20) //For some reason the variable is called "found", but it's completion
+    {
+        achievementList[WHEELS_UP].unlocked = true;
+        //TODO add to list of achievements to pop up somehow (events?)
+    }
+
+    if (!achievementList[WHERE_TO].unlocked &&
+        CStats::PassengersDroppedOffWithTaxi >= 100) //For some reason the variable is called "found", but it's completion
+    {
+        achievementList[WHERE_TO].unlocked = true;
+        //TODO add to list of achievements to pop up somehow (events?)
+    }
+
+    if (!achievementList[MAN_TOYZ].unlocked &&
+        CStats::HighestScores[1] >= 1 && //Diablo Destruction
+        CStats::HighestScores[2] >= 1 && //Mafia Massacre
+        CStats::HighestScores[3] >= 1 && //Rumpo Rampage
+        CStats::HighestScores[4] >= 1) //Casino Calamity
+    {
+        achievementList[MAN_TOYZ].unlocked = true;
+        //TODO add to list of achievements to pop up somehow (events?)
+    }
+    
+    if (!achievementList[PLAYING_DOCTOR].unlocked &&
+        CStats::HighestLevelAmbulanceMission >= 12)
+    {
+        achievementList[PLAYING_DOCTOR].unlocked = true;
+        //TODO add to list of achievements to pop up somehow (events?)
+    }
+
+    int rating = CStats::FindCriminalRatingNumber();
+    if (!achievementList[RIGHT_HAND_MAN].unlocked &&
+        rating >= 2500)
+    {
+        achievementList[RIGHT_HAND_MAN].unlocked = true;
+        //TODO add to list of achievements to pop up somehow (events?)
+    }
+    
+    if (!achievementList[IS_THAT_ALL_YOUVE_GOT].unlocked)
+    {
+        CPlayerInfo* player = &CWorld::Players[CWorld::PlayerInFocus];
+        if (player->m_nCollectablesCollected >= 100)
+        {
+            achievementList[IS_THAT_ALL_YOUVE_GOT].unlocked = true;
+            //TODO add to list of achievements to pop up somehow (events?)
+        }
+    }
+
+    if (!achievementList[IS_THAT_ALL_YOUVE_GOT].unlocked &&
+        CStats::ProgressMade >= CStats::TotalProgressInGame)
+    {
+        achievementList[IS_THAT_ALL_YOUVE_GOT].unlocked = true;
+        //TODO add to list of achievements to pop up somehow (events?)
+    }
+    
+    if (!achievementList[HUNTING_SEASON].unlocked &&
+        CStats::HelisDestroyed >= 5)
+    {
+        achievementList[HUNTING_SEASON].unlocked = true;
+        //TODO add to list of achievements to pop up somehow (events?)
+    }
+
+    if (!achievementList[REPEAT_OFFENDER].unlocked &&
+        CStats::TimesArrested >= 20)
+    {
+        achievementList[REPEAT_OFFENDER].unlocked = true;
+        //TODO add to list of achievements to pop up somehow (events?)
+    }
+
+    if (!achievementList[CHEATERS_DO_PROSPER].unlocked &&
+        CStats::CarsExploded >= 2000)
+    {
+        achievementList[CHEATERS_DO_PROSPER].unlocked = true;
+        //TODO add to list of achievements to pop up somehow (events?)
+    }
+
+    if (!achievementList[LIKE_A_BOSS].unlocked &&
+        rating >= 5000)
+    {
+        achievementList[LIKE_A_BOSS].unlocked = true;
+        //TODO add to list of achievements to pop up somehow (events?)
+    }
+
+    if (!achievementList[RECYCLER].unlocked &&
+        CStats::CarsCrushed >= 25)
+    {
+        achievementList[RECYCLER].unlocked = true;
+        //TODO add to list of achievements to pop up somehow (events?)
+    }
 
 }
 
@@ -248,22 +349,18 @@ void AchievementManager::CheckBribeAchievement()
 void AchievementManager::CheckMoneyAchievements()
 {
     CPlayerInfo* player = &CWorld::Players[CWorld::PlayerInFocus];
-    if (!achievementList[CHASING_PAPER].unlocked)
+    if (!achievementList[CHASING_PAPER].unlocked &&
+        player->m_nMoney >= 500000)
     {
-        if (player->m_nMoney >= 500000)
-        {
-            achievementList[CHASING_PAPER].unlocked = true;
-            //TODO add to list of achievements to pop up somehow (events?)
-        }
+        achievementList[CHASING_PAPER].unlocked = true;
+        //TODO add to list of achievements to pop up somehow (events?)
     }
 
-    if (!achievementList[DIRTY_MONEY].unlocked)
+    if (!achievementList[DIRTY_MONEY].unlocked &&
+        player->m_nMoney >= 1000000)
     {
-        if (player->m_nMoney >= 1000000)
-        {
-            achievementList[DIRTY_MONEY].unlocked = true;
-            //TODO add to list of achievements to pop up somehow (events?)
-        }
+        achievementList[DIRTY_MONEY].unlocked = true;
+        //TODO add to list of achievements to pop up somehow (events?)
     }
 }
 
@@ -316,11 +413,12 @@ void AchievementManager::CheckExportAchievements()
 }
 
 /*
-    Counts gang members killed with melee and checks for the achievement (1)
+    Counts gang members kills and checks for the achievements (2)
 */
-void AchievementManager::CheckGangstersBattedAchievement()
+void AchievementManager::CheckGangsKillsAchievements()
 {
     //TODO: count them somehow
+    //Bat and Street Sweeper
 }
 
 /*
@@ -336,7 +434,30 @@ void AchievementManager::CheckLibertyCityMinute()
 */
 void AchievementManager::CheckRoadkillAchievement()
 {
-    //TODO: I think I can check weapon type of kill
+    if (!achievementList[AM_WALKIN_HERE].unlocked)
+    {
+        CPlayerInfo* player = &CWorld::Players[CWorld::PlayerInFocus];
+        if (player->m_nPlayerState == PLAYERSTATE_HASDIED)
+        {
+            if (player->m_pPed->m_nLastWepDam == WEAPONTYPE_RUNOVERBYCAR ||
+                player->m_pPed->m_nLastWepDam == WEAPONTYPE_RAMMEDBYCAR)
+            {
+                achievementList[AM_WALKIN_HERE].unlocked = true;
+                //TODO add to list of achievements to pop up somehow (events?)
+            }
+        }
+    }
+}
+
+/*
+    Checks every weapon used achievement (1)
+*/
+void AchievementManager::CheckFullArtilleryAchievement()
+{
+    if (!achievementList[FULL_ARTILLERY].unlocked)
+    {
+        //TODO
+    }
 }
 
 /*

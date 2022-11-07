@@ -13,8 +13,6 @@ struct AchievementDefinition {
 	bool unlocked;
 };
 
-AchievementDefinition achievementList[NUM_ACHIEVEMENTS];
-
 enum AchievementID {
 	FIRST_DAY_ON_THE_JOB = 0,
 	WITHOUT_A_SCRATCH = 1,
@@ -65,30 +63,35 @@ enum AchievementID {
 class AchievementManager
 {
 public:
+	//achievement list
+	static AchievementDefinition achievementList[NUM_ACHIEVEMENTS];
+
+	//helper variables
+	static uint8_t bribes_pickedup;
+	static uint8_t portland_criminals;
+	static uint8_t staunton_criminals;
+	static uint8_t firefighter_criminals;
+	static uint8_t portland_fires;
+	static uint8_t staunton_fires;
+	static uint8_t firefighter_fires;
+
+	//functions
 	static void Init();
 	static void Save();
-	static void CheckStatBasedAchievements();
-	static void CheckMissionCompleteAchievements();
-	static void CheckSpecialMissionAchievements();
-	static void CheckBribeAchievement();
-	static void CheckMoneyAchievements();
-	static void CheckPhoneAchievement();
-	static void CheckRampageAchievements();
-	static void CheckFiresInARow();
-	static void CheckCriminalsInARow();
-	static void CheckFuriousFirstResponder();
-	static void CheckExportAchievements();
-	static void CheckGangstersBattedAchievement();
-	static void CheckLibertyCityMinute();
-	static void CheckRoadkillAchievement();
-	static void CheckAllAchievementsComplete();
+	static void CheckStatBasedAchievements(); //15
+	static void CheckMissionCompleteAchievements(); //6
+	static void CheckSpecialMissionAchievements(); //4
+	static void CheckBribeAchievement(); //1
+	static void CheckMoneyAchievements(); //2
+	static void CheckPhoneAchievement(); //1
+	static void CheckRampageAchievements(); //2
+	static void CheckFiresInARow(); //2
+	static void CheckCriminalsInARow(); //2
+	static void CheckFuriousFirstResponder(); //1
+	static void CheckExportAchievements(); //2
+	static void CheckGangsKillsAchievements(); //2
+	static void CheckLibertyCityMinute(); //1
+	static void CheckRoadkillAchievement(); //1
+	static void CheckFullArtilleryAchievement(); //1
+	static void CheckAllAchievementsComplete(); //1
 };
-
-//helper variables
-uint8_t bribes_pickedup;
-uint8_t portland_criminals;
-uint8_t staunton_criminals;
-uint8_t firefighter_criminals;
-uint8_t portland_fires;
-uint8_t staunton_fires;
-uint8_t firefighter_fires;
