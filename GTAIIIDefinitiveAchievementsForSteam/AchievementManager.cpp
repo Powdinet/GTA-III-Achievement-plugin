@@ -162,7 +162,7 @@ void AchievementManager::Save()
 }
 
 /*
-    Checks achievements based on game stats
+    Checks achievements based on game stats (17)
 */
 void AchievementManager::CheckStatBasedAchievements()
 {
@@ -186,18 +186,35 @@ void AchievementManager::CheckStatBasedAchievements()
 
 }
 
+/*
+    Checks achievements that unlock on mission complete (6)
+*/
 void AchievementManager::CheckMissionCompleteAchievements()
 {
     //Different check from Definitive, based on REGISTER_MISSION_PASSED strings
-    //TODO:
+    //TODO: First Day on the Job (Luigi's Girls)
+    //TODO: A Marked Man (Last Requests)
+    //TODO: Offshore Delivery (A Drop in the Ocean)
+    //TODO: Not So Fast (The Exchange)
+    //TODO: A Gift From the King (Kingdom Come)
+    //TODO: Got Any Stories, Old Man? (Cipriani's Chaffeur)
+
 }
 
+/*
+    Checks achievements that unlock when certain conditions are met during missions (4)
+*/
 void AchievementManager::CheckSpecialMissionAchievements()
 {
-    //stuff like Fuzz Ball and Chunky
-    //TODO
+    //TODO: Without a Scratch (Mike Lips)
+    //TODO: Mob Boss (Triads and Tribulations)
+    //TODO: Planned Ahead (Farewell Chunky Lee Chong)
+    //TODO: Got This Figured Out (Fuzz Ball)
 }
 
+/*
+    Counts bribes and checks for the bribe achievement (1)
+*/
 void AchievementManager::CheckBribeAchievement()
 {
     if (!achievementList[ESCAPE_ARTIST].unlocked)
@@ -226,11 +243,10 @@ void AchievementManager::CheckBribeAchievement()
 }
 
 /*
-    Checks for the money achievements
+    Checks for the money achievements (2)
 */
 void AchievementManager::CheckMoneyAchievements()
 {
-    //TODO:
     CPlayerInfo* player = &CWorld::Players[CWorld::PlayerInFocus];
     if (!achievementList[CHASING_PAPER].unlocked)
     {
@@ -252,7 +268,79 @@ void AchievementManager::CheckMoneyAchievements()
 }
 
 /*
-    Checks if all achievements have been completed to unlock King of Liberty
+    Checks for the phone missions achievement (1)
+*/
+void AchievementManager::CheckPhoneAchievement()
+{
+    //TODO Check completion flags in the script, as intended 
+}
+
+/*
+    Checks the rampage completion achievements (2)
+*/
+void AchievementManager::CheckRampageAchievements()
+{
+    //TODO Check counter in the script
+}
+
+/*
+    Checks the fires extinguished in a single session achievements (2)
+*/
+void AchievementManager::CheckFiresInARow()
+{
+    //TODO Check counter in the script
+}
+
+/*
+    Checks the criminals killed in a single session achievements (2)
+*/
+void AchievementManager::CheckCriminalsInARow()
+{
+    //TODO Check counter in the script
+}
+
+/*
+    Checks for Furious First Responder (1)
+*/
+void AchievementManager::CheckFuriousFirstResponder()
+{
+    //TODO count and check levels
+}
+
+/*
+    Checks for the export garages and emergency crane achievements (2)
+*/
+void AchievementManager::CheckExportAchievements()
+{
+    //TODO:
+}
+
+/*
+    Counts gang members killed with melee and checks for the achievement (1)
+*/
+void AchievementManager::CheckGangstersBattedAchievement()
+{
+    //TODO: count them somehow
+}
+
+/*
+    Checks time player has been under 10HP and unlocks that achievement (1)
+*/
+void AchievementManager::CheckLibertyCityMinute()
+{
+    //TODO: check player health and just count the time. Note: when player is dead the timer doesn't continue. Obviously, timer resets when health is above 10
+}
+
+/*
+    Checks run over achievement (1)
+*/
+void AchievementManager::CheckRoadkillAchievement()
+{
+    //TODO: I think I can check weapon type of kill
+}
+
+/*
+    Checks if all achievements have been completed to unlock King of Liberty (1)
 */
 void AchievementManager::CheckAllAchievementsComplete()
 {

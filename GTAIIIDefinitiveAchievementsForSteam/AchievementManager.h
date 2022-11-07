@@ -72,6 +72,15 @@ public:
 	static void CheckSpecialMissionAchievements();
 	static void CheckBribeAchievement();
 	static void CheckMoneyAchievements();
+	static void CheckPhoneAchievement();
+	static void CheckRampageAchievements();
+	static void CheckFiresInARow();
+	static void CheckCriminalsInARow();
+	static void CheckFuriousFirstResponder();
+	static void CheckExportAchievements();
+	static void CheckGangstersBattedAchievement();
+	static void CheckLibertyCityMinute();
+	static void CheckRoadkillAchievement();
 	static void CheckAllAchievementsComplete();
 };
 
