@@ -1,6 +1,11 @@
 #include "plugin.h"
 #include "AchievementManager.h"
 
+#include "CHud.h" //TODO DELETE
+#include "CTimer.h" //TODO DELETE
+#include "CWorld.h" //TODO DELETE
+#include "CCheat.h" //TODO DELETE
+
 using namespace plugin;
 
 class GTAIIIDefinitiveAchievementsForSteam {
@@ -16,14 +21,12 @@ public:
         //TODO: init popup stuff if needed
         //AchievementUnlockPopupManager.Init();
 
-        Events::gameProcessEvent.Add(AchievementManager::CheckStatBasedAchievements);
-        Events::gameProcessEvent.Add(AchievementManager::CheckMissionCompleteAchievements);
-        Events::gameProcessEvent.Add(AchievementManager::CheckSpecialMissionAchievements);
-        Events::gameProcessEvent.Add(AchievementManager::CheckBribeAchievement);
-        Events::gameProcessEvent.Add(AchievementManager::CheckMoneyAchievements);
-        Events::gameProcessEvent.Add(AchievementManager::CheckAllAchievementsComplete);
+        //TODO: something to detect new game/loaded save and reset/read helper variables
+        
+        //TODO: any kind of write makes the game crash
 
-        Events::shutdownRwEvent.Add(AchievementManager::Save);//TODO: is this the game close event?
+        Events::gameProcessEvent += AchievementManager::CheckAchievements;
+        //Events::shutdownRwEvent += AchievementManager::Save;//TODO: is this the game close event?
         
     }
 

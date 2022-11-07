@@ -4,6 +4,9 @@
 #include "CStats.h"
 #include "eWeaponType.h"
 #include "CTimer.h"
+#include "CTheScripts.h"
+#include "CReplay.h"
+#include "CHud.h"
 #include "AchievementManager.h"
 
 //achievement list
@@ -11,12 +14,7 @@ AchievementDefinition AchievementManager::achievementList[NUM_ACHIEVEMENTS];
 
 //helper variables
 uint8_t AchievementManager::bribes_pickedup;
-uint8_t AchievementManager::portland_criminals;
-uint8_t AchievementManager::staunton_criminals;
-uint8_t AchievementManager::firefighter_criminals;
-uint8_t AchievementManager::portland_fires;
-uint8_t AchievementManager::staunton_fires;
-uint8_t AchievementManager::firefighter_fires;
+bool AchievementManager::cheated;
 
 void AchievementManager::Init()
 {
@@ -31,8 +29,8 @@ void AchievementManager::Init()
     achievementList[ESCAPE_ARTIST].name = "Escape Artist";
     achievementList[ESCAPE_ARTIST].description = "Use 20 police bribes";
 
-    achievementList[DISPOSTING_OF_THE_EVIDENCE].name = "Disposing of the Evidence";
-    achievementList[DISPOSTING_OF_THE_EVIDENCE].description = "Crush a car at the junkyard";
+    achievementList[DISPOSING_OF_THE_EVIDENCE].name = "Disposing of the Evidence";
+    achievementList[DISPOSING_OF_THE_EVIDENCE].description = "Crush a car at the junkyard";
 
     achievementList[MOB_BOSS].name = "Mob Boss";
     achievementList[MOB_BOSS].description = "Keep the two mafia members alive during \"Triads and Tribulations\"";
@@ -162,6 +160,14 @@ void AchievementManager::Init()
     //TODO: load in any extra data
     //TODO: could save extra data in unused global variables so they would be attached to the save files.
     //Just need to detect new games / save loads properly and save into those areas whenever the variables are updated
+
+    //setup cheat variables
+    mbstowcs_s(NULL, wcheat0, strlen(cheat0) + 1, cheat0, strlen(cheat0));
+    mbstowcs_s(NULL, wcheat1, strlen(cheat1) + 1, cheat1, strlen(cheat1));
+    mbstowcs_s(NULL, wcheatmessage, strlen(cheatmessage) + 1, cheatmessage, strlen(cheatmessage));
+
+    if(cheated) //currently crashes due to SDK
+        CHud::SetHelpMessage(wcheatmessage, true);
 }
 
 void AchievementManager::Save()
@@ -170,15 +176,47 @@ void AchievementManager::Save()
 }
 
 /*
+    Runs all achievement checkers if the game is in conditions to do so
+*/
+void AchievementManager::CheckAchievements()
+{
+    //TODO: am I able to check for cheats?
+    CheckForCheats();
+    if (!cheated)
+    {
+        if (!CTimer::m_UserPause && !CTimer::m_CodePause && !CReplay::Mode)
+        {
+            /*CheckStatBasedAchievements();
+            CheckMissionCompleteAchievements();
+            CheckSpecialMissionAchievements();
+            CheckBribeAchievement();
+            CheckMoneyAchievements();
+            CheckPhoneAchievement();
+            CheckRampageAchievements();
+            CheckFiresInARow();
+            CheckCriminalsInARow();
+            CheckFuriousFirstResponder();
+            CheckExportAchievements();
+            CheckGangsKillsAchievements();
+            CheckLibertyCityMinute();
+            CheckRoadkillAchievement();
+            CheckFullArtilleryAchievement();
+            CheckAllAchievementsComplete();*/
+        }
+    }
+}
+
+/*
     Checks achievements based on game stats (15)
 */
 void AchievementManager::CheckStatBasedAchievements()
 {
-    if (!achievementList[DISPOSTING_OF_THE_EVIDENCE].unlocked &&
+    if (!achievementList[DISPOSING_OF_THE_EVIDENCE].unlocked &&
         CStats::CarsCrushed >= 1)
     {
-        achievementList[DISPOSTING_OF_THE_EVIDENCE].unlocked = true;
+        achievementList[DISPOSING_OF_THE_EVIDENCE].unlocked = true;
         //TODO add to list of achievements to pop up somehow (events?)
+        //TODO test
     }
 
     if (!achievementList[BY_A_MILE].unlocked &&
@@ -186,6 +224,7 @@ void AchievementManager::CheckStatBasedAchievements()
     {
         achievementList[BY_A_MILE].unlocked = true;
         //TODO add to list of achievements to pop up somehow (events?)
+        //TODO test
     }
 
     if (!achievementList[WRECKLESS_DRIVING].unlocked &&
@@ -193,6 +232,7 @@ void AchievementManager::CheckStatBasedAchievements()
     {
         achievementList[WRECKLESS_DRIVING].unlocked = true;
         //TODO add to list of achievements to pop up somehow (events?)
+        //TODO test
     }
 
     if (!achievementList[WHEELS_UP].unlocked &&
@@ -200,6 +240,7 @@ void AchievementManager::CheckStatBasedAchievements()
     {
         achievementList[WHEELS_UP].unlocked = true;
         //TODO add to list of achievements to pop up somehow (events?)
+        //TODO test
     }
 
     if (!achievementList[WHERE_TO].unlocked &&
@@ -207,6 +248,7 @@ void AchievementManager::CheckStatBasedAchievements()
     {
         achievementList[WHERE_TO].unlocked = true;
         //TODO add to list of achievements to pop up somehow (events?)
+        //TODO test
     }
 
     if (!achievementList[MAN_TOYZ].unlocked &&
@@ -217,6 +259,7 @@ void AchievementManager::CheckStatBasedAchievements()
     {
         achievementList[MAN_TOYZ].unlocked = true;
         //TODO add to list of achievements to pop up somehow (events?)
+        //TODO test
     }
     
     if (!achievementList[PLAYING_DOCTOR].unlocked &&
@@ -224,6 +267,7 @@ void AchievementManager::CheckStatBasedAchievements()
     {
         achievementList[PLAYING_DOCTOR].unlocked = true;
         //TODO add to list of achievements to pop up somehow (events?)
+        //TODO test
     }
 
     int rating = CStats::FindCriminalRatingNumber();
@@ -232,6 +276,7 @@ void AchievementManager::CheckStatBasedAchievements()
     {
         achievementList[RIGHT_HAND_MAN].unlocked = true;
         //TODO add to list of achievements to pop up somehow (events?)
+        //TODO test
     }
     
     if (!achievementList[IS_THAT_ALL_YOUVE_GOT].unlocked)
@@ -241,6 +286,7 @@ void AchievementManager::CheckStatBasedAchievements()
         {
             achievementList[IS_THAT_ALL_YOUVE_GOT].unlocked = true;
             //TODO add to list of achievements to pop up somehow (events?)
+            //TODO test
         }
     }
 
@@ -249,6 +295,7 @@ void AchievementManager::CheckStatBasedAchievements()
     {
         achievementList[IS_THAT_ALL_YOUVE_GOT].unlocked = true;
         //TODO add to list of achievements to pop up somehow (events?)
+        //TODO test
     }
     
     if (!achievementList[HUNTING_SEASON].unlocked &&
@@ -256,6 +303,7 @@ void AchievementManager::CheckStatBasedAchievements()
     {
         achievementList[HUNTING_SEASON].unlocked = true;
         //TODO add to list of achievements to pop up somehow (events?)
+        //TODO test
     }
 
     if (!achievementList[REPEAT_OFFENDER].unlocked &&
@@ -263,6 +311,7 @@ void AchievementManager::CheckStatBasedAchievements()
     {
         achievementList[REPEAT_OFFENDER].unlocked = true;
         //TODO add to list of achievements to pop up somehow (events?)
+        //TODO test
     }
 
     if (!achievementList[CHEATERS_DO_PROSPER].unlocked &&
@@ -270,6 +319,7 @@ void AchievementManager::CheckStatBasedAchievements()
     {
         achievementList[CHEATERS_DO_PROSPER].unlocked = true;
         //TODO add to list of achievements to pop up somehow (events?)
+        //TODO test
     }
 
     if (!achievementList[LIKE_A_BOSS].unlocked &&
@@ -277,6 +327,7 @@ void AchievementManager::CheckStatBasedAchievements()
     {
         achievementList[LIKE_A_BOSS].unlocked = true;
         //TODO add to list of achievements to pop up somehow (events?)
+        //TODO test
     }
 
     if (!achievementList[RECYCLER].unlocked &&
@@ -284,6 +335,7 @@ void AchievementManager::CheckStatBasedAchievements()
     {
         achievementList[RECYCLER].unlocked = true;
         //TODO add to list of achievements to pop up somehow (events?)
+        //TODO test
     }
 }
 
@@ -301,6 +353,7 @@ void AchievementManager::CheckMissionCompleteAchievements()
     {
         achievementList[FIRST_DAY_ON_THE_JOB].unlocked = true;
         //TODO add to list of achievements to pop up somehow (events?)
+        //TODO test
     }
 
     //A Marked Man (Last Requests)
@@ -309,6 +362,7 @@ void AchievementManager::CheckMissionCompleteAchievements()
     {
         achievementList[A_MARKED_MAN].unlocked = true;
         //TODO add to list of achievements to pop up somehow (events?)
+        //TODO test
     }
 
     //Offshore Delivery (A Drop in the Ocean)
@@ -317,6 +371,7 @@ void AchievementManager::CheckMissionCompleteAchievements()
     {
         achievementList[OFFSHORE_DELIVERY].unlocked = true;
         //TODO add to list of achievements to pop up somehow (events?)
+        //TODO test
     }
 
     //Not So Fast (The Exchange)
@@ -325,6 +380,7 @@ void AchievementManager::CheckMissionCompleteAchievements()
     {
         achievementList[NOT_SO_FAST].unlocked = true;
         //TODO add to list of achievements to pop up somehow (events?)
+        //TODO test
     }
 
     //A Gift From the King (Kingdom Come)
@@ -333,6 +389,7 @@ void AchievementManager::CheckMissionCompleteAchievements()
     {
         achievementList[A_GIFT_FROM_THE_KING].unlocked = true;
         //TODO add to list of achievements to pop up somehow (events?)
+        //TODO test
     }
 
     //Got Any Stories, Old Man? (Cipriani's Chaffeur)
@@ -341,12 +398,12 @@ void AchievementManager::CheckMissionCompleteAchievements()
     {
         achievementList[GOT_ANY_STORIES_OLD_MAN].unlocked = true;
         //TODO add to list of achievements to pop up somehow (events?)
+        //TODO test
     }
-
 }
 
 /*
-    Checks achievements that unlock when certain conditions are met during missions (4)
+    Checks achievements that unlock when certain conditions are met during missions (5)
 */
 void AchievementManager::CheckSpecialMissionAchievements()
 {
@@ -354,6 +411,7 @@ void AchievementManager::CheckSpecialMissionAchievements()
     //TODO: Mob Boss (Triads and Tribulations)
     //TODO: Planned Ahead (Farewell Chunky Lee Chong)
     //TODO: Got This Figured Out (Fuzz Ball)
+    //TODO: Fare Game (Cutting the Grass)
 }
 
 /*
@@ -379,6 +437,7 @@ void AchievementManager::CheckBribeAchievement()
                     {
                         achievementList[ESCAPE_ARTIST].unlocked = true;
                         //TODO add to list of achievements to pop up somehow (events?)
+                        //TODO: test
                     }
                 }
             }
@@ -397,6 +456,7 @@ void AchievementManager::CheckMoneyAchievements()
     {
         achievementList[CHASING_PAPER].unlocked = true;
         //TODO add to list of achievements to pop up somehow (events?)
+        //TODO: test
     }
 
     if (!achievementList[DIRTY_MONEY].unlocked &&
@@ -404,6 +464,7 @@ void AchievementManager::CheckMoneyAchievements()
     {
         achievementList[DIRTY_MONEY].unlocked = true;
         //TODO add to list of achievements to pop up somehow (events?)
+        //TODO: test
     }
 }
 
@@ -420,7 +481,21 @@ void AchievementManager::CheckPhoneAchievement()
 */
 void AchievementManager::CheckRampageAchievements()
 {
-    //TODO Check counter in the script
+    if (!achievementList[INSTIGATOR].unlocked &&
+        Read4BytesFromScript(&TOTAL_RAMPAGES_PASSED) >= 10)
+    {
+        achievementList[INSTIGATOR].unlocked = true;
+        //TODO add to list of achievements to pop up somehow (events?)
+        //TODO: test
+    }
+
+    if (!achievementList[BLOOD_IN_THE_STREETS].unlocked &&
+        Read4BytesFromScript(&TOTAL_RAMPAGES_PASSED) >= 20)
+    {
+        achievementList[BLOOD_IN_THE_STREETS].unlocked = true;
+        //TODO add to list of achievements to pop up somehow (events?)
+        //TODO: test
+    }
 }
 
 /*
@@ -428,15 +503,35 @@ void AchievementManager::CheckRampageAchievements()
 */
 void AchievementManager::CheckFiresInARow()
 {
-    //TODO Check counter in the script
+    if (!achievementList[SPLISH_SPLASH].unlocked &&
+        Read4BytesFromScript(&FIREFIGHTER_FIRES_IN_ROW_GLOBAL_INDEX) >= 15)
+    {
+        achievementList[SPLISH_SPLASH].unlocked = true;
+        //TODO add to list of achievements to pop up somehow (events?)
+        //TODO: test
+    }
+
+    if (!achievementList[RELIEF_PITCHER].unlocked &&
+        Read4BytesFromScript(&FIREFIGHTER_FIRES_IN_ROW_GLOBAL_INDEX) >= 20)
+    {
+        achievementList[RELIEF_PITCHER].unlocked = true;
+        //TODO add to list of achievements to pop up somehow (events?)
+        //TODO: test
+    }
 }
 
 /*
-    Checks the criminals killed in a single session achievements (2)
+    Checks the criminals killed in a single session achievements (1)
 */
 void AchievementManager::CheckCriminalsInARow()
 {
-    //TODO Check counter in the script
+    if (!achievementList[GOING_ROGUE].unlocked &&
+        Read4BytesFromScript(&VIGILANTE_KILLS_IN_ROW_GLOBAL_INDEX) >= 15)
+    {
+        achievementList[GOING_ROGUE].unlocked = true;
+        //TODO add to list of achievements to pop up somehow (events?)
+        //TODO: test
+    }
 }
 
 /*
@@ -444,7 +539,19 @@ void AchievementManager::CheckCriminalsInARow()
 */
 void AchievementManager::CheckFuriousFirstResponder()
 {
-    //TODO count and check levels
+    if (!achievementList[FURIOUS_FIRST_RESPONDER].unlocked &&
+        CStats::HighestLevelAmbulanceMission >= 12 &&
+        Read4BytesFromScript(&VIGILANTE_PORTLAND_KILLS_GLOBAL_INDEX) >= 20 &&
+        Read4BytesFromScript(&VIGILANTE_STAUNTON_KILLS_GLOBAL_INDEX) >= 20 &&
+        Read4BytesFromScript(&VIGILANTE_SHORESIDE_KILLS_GLOBAL_INDEX) >= 20 &&
+        Read4BytesFromScript(&FIREFIGHTER_PORTLAND_FIRES_GLOBAL_INDEX) >= 20 &&
+        Read4BytesFromScript(&FIREFIGHTER_STAUNTON_FIRES_GLOBAL_INDEX) >= 20 &&
+        Read4BytesFromScript(&FIREFIGHTER_SHORESIDE_FIRES_GLOBAL_INDEX) >= 20)
+    {
+        achievementList[FURIOUS_FIRST_RESPONDER].unlocked = true;
+        //TODO add to list of achievements to pop up somehow (events?)
+        //TODO: test
+    }
 }
 
 /*
@@ -495,6 +602,7 @@ void AchievementManager::CheckLibertyCityMinute()
                     {
                         achievementList[LIBERTY_CITY_MINUTE].unlocked = true;
                         //TODO add to list of achievements to pop up somehow (events?)
+                        //TODO: test
                         lcmState = LCM_COMPLETE;
                     }
                 }
@@ -525,6 +633,7 @@ void AchievementManager::CheckRoadkillAchievement()
             {
                 achievementList[AM_WALKIN_HERE].unlocked = true;
                 //TODO add to list of achievements to pop up somehow (events?)
+                //TODO: test
             }
         }
     }
@@ -553,6 +662,32 @@ void AchievementManager::CheckAllAchievementsComplete()
                     return;
     achievementList[KING_OF_LIBERTY_CITY].unlocked = true;
     //TODO add to list of achievements to pop up somehow (events?)
+    //TODO: test
+}
+
+void AchievementManager::CheckForCheats()
+{
+    
+    //CHud::SetHelpMessage(wcheat0, false);
+
+    if (cheated)
+        return;
+    //This is a hacky solution but I don't think I can do better
+    if (wcsstr(CHud::m_HelpMessage, wcheat0) ||
+        wcsstr(CHud::m_HelpMessage, wcheat1))
+    {
+        cheated = true;
+        //TODO: currently crashes because the SDK is missing definitions for Steam version
+        CHud::SetHelpMessage(wcheatmessage, false);
+    }
+
+    //TODO: test
 }
 
 
+//TODO: This should be defined via plugin to call the game's function directly
+int32_t AchievementManager::Read4BytesFromScript(uint32_t* pIp) {
+    int32_t retval = CTheScripts::ScriptSpace[*pIp + 3] << 24 | CTheScripts::ScriptSpace[*pIp + 2] << 16 | CTheScripts::ScriptSpace[*pIp + 1] << 8 | CTheScripts::ScriptSpace[*pIp];
+    *pIp += 4;
+    return retval;
+}
