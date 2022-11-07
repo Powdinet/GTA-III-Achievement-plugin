@@ -2,6 +2,7 @@
 using namespace std;
 #include <string.h>
 
+#define DEBUG true
 #define NUM_ACHIEVEMENTS 44
 #define BRIBE_MODEL_ID 115 //TODO: hope this works
 

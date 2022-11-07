@@ -215,6 +215,7 @@ void AchievementManager::CheckStatBasedAchievements()
         CStats::CarsCrushed >= 1)
     {
         achievementList[DISPOSING_OF_THE_EVIDENCE].unlocked = true;
+        DebugHelpPrint(DISPOSING_OF_THE_EVIDENCE);
         //TODO add to list of achievements to pop up somehow (events?)
         //TODO test
     }
@@ -223,6 +224,7 @@ void AchievementManager::CheckStatBasedAchievements()
         CStats::ElBurroTime < 180)
     {
         achievementList[BY_A_MILE].unlocked = true;
+        DebugHelpPrint(BY_A_MILE);
         //TODO add to list of achievements to pop up somehow (events?)
         //TODO test
     }
@@ -231,6 +233,7 @@ void AchievementManager::CheckStatBasedAchievements()
         CStats::BestStuntJump > 0 && CStats::BestStuntJump % 2 == 0) //Perfect Stunts all have even values
     {
         achievementList[WRECKLESS_DRIVING].unlocked = true;
+        DebugHelpPrint(WRECKLESS_DRIVING);
         //TODO add to list of achievements to pop up somehow (events?)
         //TODO test
     }
@@ -239,6 +242,7 @@ void AchievementManager::CheckStatBasedAchievements()
         CStats::NumberOfUniqueJumpsFound >= 20) //For some reason the variable is called "found", but it's completion
     {
         achievementList[WHEELS_UP].unlocked = true;
+        DebugHelpPrint(WHEELS_UP);
         //TODO add to list of achievements to pop up somehow (events?)
         //TODO test
     }
@@ -247,6 +251,7 @@ void AchievementManager::CheckStatBasedAchievements()
         CStats::PassengersDroppedOffWithTaxi >= 100) //For some reason the variable is called "found", but it's completion
     {
         achievementList[WHERE_TO].unlocked = true;
+        DebugHelpPrint(WHERE_TO);
         //TODO add to list of achievements to pop up somehow (events?)
         //TODO test
     }
@@ -258,6 +263,7 @@ void AchievementManager::CheckStatBasedAchievements()
         CStats::HighestScores[4] >= 1) //Casino Calamity
     {
         achievementList[MAN_TOYZ].unlocked = true;
+        DebugHelpPrint(MAN_TOYZ);
         //TODO add to list of achievements to pop up somehow (events?)
         //TODO test
     }
@@ -266,6 +272,7 @@ void AchievementManager::CheckStatBasedAchievements()
         CStats::HighestLevelAmbulanceMission >= 12)
     {
         achievementList[PLAYING_DOCTOR].unlocked = true;
+        DebugHelpPrint(PLAYING_DOCTOR);
         //TODO add to list of achievements to pop up somehow (events?)
         //TODO test
     }
@@ -275,16 +282,18 @@ void AchievementManager::CheckStatBasedAchievements()
         rating >= 2500)
     {
         achievementList[RIGHT_HAND_MAN].unlocked = true;
+        DebugHelpPrint(RIGHT_HAND_MAN);
         //TODO add to list of achievements to pop up somehow (events?)
         //TODO test
     }
     
-    if (!achievementList[IS_THAT_ALL_YOUVE_GOT].unlocked)
+    if (!achievementList[LIBERTY_CITY_SECRETS].unlocked)
     {
         CPlayerInfo* player = &CWorld::Players[CWorld::PlayerInFocus];
         if (player->m_nCollectablesCollected >= 100)
         {
-            achievementList[IS_THAT_ALL_YOUVE_GOT].unlocked = true;
+            achievementList[LIBERTY_CITY_SECRETS].unlocked = true;
+            DebugHelpPrint(LIBERTY_CITY_SECRETS);
             //TODO add to list of achievements to pop up somehow (events?)
             //TODO test
         }
@@ -294,6 +303,7 @@ void AchievementManager::CheckStatBasedAchievements()
         CStats::ProgressMade >= CStats::TotalProgressInGame)
     {
         achievementList[IS_THAT_ALL_YOUVE_GOT].unlocked = true;
+        DebugHelpPrint(IS_THAT_ALL_YOUVE_GOT);
         //TODO add to list of achievements to pop up somehow (events?)
         //TODO test
     }
@@ -302,6 +312,7 @@ void AchievementManager::CheckStatBasedAchievements()
         CStats::HelisDestroyed >= 5)
     {
         achievementList[HUNTING_SEASON].unlocked = true;
+        DebugHelpPrint(HUNTING_SEASON);
         //TODO add to list of achievements to pop up somehow (events?)
         //TODO test
     }
@@ -310,6 +321,7 @@ void AchievementManager::CheckStatBasedAchievements()
         CStats::TimesArrested >= 20)
     {
         achievementList[REPEAT_OFFENDER].unlocked = true;
+        DebugHelpPrint(REPEAT_OFFENDER);
         //TODO add to list of achievements to pop up somehow (events?)
         //TODO test
     }
@@ -318,6 +330,7 @@ void AchievementManager::CheckStatBasedAchievements()
         CStats::CarsExploded >= 2000)
     {
         achievementList[CHEATERS_DO_PROSPER].unlocked = true;
+        DebugHelpPrint(CHEATERS_DO_PROSPER);
         //TODO add to list of achievements to pop up somehow (events?)
         //TODO test
     }
@@ -326,6 +339,7 @@ void AchievementManager::CheckStatBasedAchievements()
         rating >= 5000)
     {
         achievementList[LIKE_A_BOSS].unlocked = true;
+        DebugHelpPrint(LIKE_A_BOSS);
         //TODO add to list of achievements to pop up somehow (events?)
         //TODO test
     }
@@ -334,6 +348,7 @@ void AchievementManager::CheckStatBasedAchievements()
         CStats::CarsCrushed >= 25)
     {
         achievementList[RECYCLER].unlocked = true;
+        DebugHelpPrint(RECYCLER);
         //TODO add to list of achievements to pop up somehow (events?)
         //TODO test
     }
@@ -352,6 +367,7 @@ void AchievementManager::CheckMissionCompleteAchievements()
         !strcmp(lastMission, "LM1"))
     {
         achievementList[FIRST_DAY_ON_THE_JOB].unlocked = true;
+        DebugHelpPrint(FIRST_DAY_ON_THE_JOB);
         //TODO add to list of achievements to pop up somehow (events?)
         //TODO test
     }
@@ -361,6 +377,7 @@ void AchievementManager::CheckMissionCompleteAchievements()
         !strcmp(lastMission, "FM4"))
     {
         achievementList[A_MARKED_MAN].unlocked = true;
+        DebugHelpPrint(A_MARKED_MAN);
         //TODO add to list of achievements to pop up somehow (events?)
         //TODO test
     }
@@ -370,6 +387,7 @@ void AchievementManager::CheckMissionCompleteAchievements()
         !strcmp(lastMission, "LOVE3"))
     {
         achievementList[OFFSHORE_DELIVERY].unlocked = true;
+        DebugHelpPrint(OFFSHORE_DELIVERY);
         //TODO add to list of achievements to pop up somehow (events?)
         //TODO test
     }
@@ -379,6 +397,7 @@ void AchievementManager::CheckMissionCompleteAchievements()
         !strcmp(lastMission, "CAT2"))
     {
         achievementList[NOT_SO_FAST].unlocked = true;
+        DebugHelpPrint(NOT_SO_FAST);
         //TODO add to list of achievements to pop up somehow (events?)
         //TODO test
     }
@@ -388,6 +407,7 @@ void AchievementManager::CheckMissionCompleteAchievements()
         !strcmp(lastMission, "YD4"))
     {
         achievementList[A_GIFT_FROM_THE_KING].unlocked = true;
+        DebugHelpPrint(A_GIFT_FROM_THE_KING);
         //TODO add to list of achievements to pop up somehow (events?)
         //TODO test
     }
@@ -397,6 +417,7 @@ void AchievementManager::CheckMissionCompleteAchievements()
         !strcmp(lastMission, "JM4"))
     {
         achievementList[GOT_ANY_STORIES_OLD_MAN].unlocked = true;
+        DebugHelpPrint(GOT_ANY_STORIES_OLD_MAN);
         //TODO add to list of achievements to pop up somehow (events?)
         //TODO test
     }
@@ -436,6 +457,7 @@ void AchievementManager::CheckBribeAchievement()
                     if (bribes_pickedup >= 20)
                     {
                         achievementList[ESCAPE_ARTIST].unlocked = true;
+                        DebugHelpPrint(ESCAPE_ARTIST);
                         //TODO add to list of achievements to pop up somehow (events?)
                         //TODO: test
                     }
@@ -455,6 +477,7 @@ void AchievementManager::CheckMoneyAchievements()
         player->m_nMoney >= 500000)
     {
         achievementList[CHASING_PAPER].unlocked = true;
+        DebugHelpPrint(CHASING_PAPER);
         //TODO add to list of achievements to pop up somehow (events?)
         //TODO: test
     }
@@ -463,6 +486,7 @@ void AchievementManager::CheckMoneyAchievements()
         player->m_nMoney >= 1000000)
     {
         achievementList[DIRTY_MONEY].unlocked = true;
+        DebugHelpPrint(DIRTY_MONEY);
         //TODO add to list of achievements to pop up somehow (events?)
         //TODO: test
     }
@@ -485,6 +509,7 @@ void AchievementManager::CheckRampageAchievements()
         Read4BytesFromScript(&TOTAL_RAMPAGES_PASSED) >= 10)
     {
         achievementList[INSTIGATOR].unlocked = true;
+        DebugHelpPrint(INSTIGATOR);
         //TODO add to list of achievements to pop up somehow (events?)
         //TODO: test
     }
@@ -493,6 +518,7 @@ void AchievementManager::CheckRampageAchievements()
         Read4BytesFromScript(&TOTAL_RAMPAGES_PASSED) >= 20)
     {
         achievementList[BLOOD_IN_THE_STREETS].unlocked = true;
+        DebugHelpPrint(BLOOD_IN_THE_STREETS);
         //TODO add to list of achievements to pop up somehow (events?)
         //TODO: test
     }
@@ -507,6 +533,7 @@ void AchievementManager::CheckFiresInARow()
         Read4BytesFromScript(&FIREFIGHTER_FIRES_IN_ROW_GLOBAL_INDEX) >= 15)
     {
         achievementList[SPLISH_SPLASH].unlocked = true;
+        DebugHelpPrint(SPLISH_SPLASH);
         //TODO add to list of achievements to pop up somehow (events?)
         //TODO: test
     }
@@ -515,6 +542,7 @@ void AchievementManager::CheckFiresInARow()
         Read4BytesFromScript(&FIREFIGHTER_FIRES_IN_ROW_GLOBAL_INDEX) >= 20)
     {
         achievementList[RELIEF_PITCHER].unlocked = true;
+        DebugHelpPrint(RELIEF_PITCHER);
         //TODO add to list of achievements to pop up somehow (events?)
         //TODO: test
     }
@@ -529,6 +557,7 @@ void AchievementManager::CheckCriminalsInARow()
         Read4BytesFromScript(&VIGILANTE_KILLS_IN_ROW_GLOBAL_INDEX) >= 15)
     {
         achievementList[GOING_ROGUE].unlocked = true;
+        DebugHelpPrint(GOING_ROGUE);
         //TODO add to list of achievements to pop up somehow (events?)
         //TODO: test
     }
@@ -549,6 +578,7 @@ void AchievementManager::CheckFuriousFirstResponder()
         Read4BytesFromScript(&FIREFIGHTER_SHORESIDE_FIRES_GLOBAL_INDEX) >= 20)
     {
         achievementList[FURIOUS_FIRST_RESPONDER].unlocked = true;
+        DebugHelpPrint(FURIOUS_FIRST_RESPONDER);
         //TODO add to list of achievements to pop up somehow (events?)
         //TODO: test
     }
@@ -601,6 +631,7 @@ void AchievementManager::CheckLibertyCityMinute()
                     if (CTimer::m_snTimeInMilliseconds - lcmStartTime >= 60000)
                     {
                         achievementList[LIBERTY_CITY_MINUTE].unlocked = true;
+                        DebugHelpPrint(LIBERTY_CITY_MINUTE);
                         //TODO add to list of achievements to pop up somehow (events?)
                         //TODO: test
                         lcmState = LCM_COMPLETE;
@@ -632,6 +663,7 @@ void AchievementManager::CheckRoadkillAchievement()
                 player->m_pPed->m_nLastWepDam == WEAPONTYPE_RAMMEDBYCAR)
             {
                 achievementList[AM_WALKIN_HERE].unlocked = true;
+                DebugHelpPrint(AM_WALKIN_HERE);
                 //TODO add to list of achievements to pop up somehow (events?)
                 //TODO: test
             }
@@ -661,6 +693,7 @@ void AchievementManager::CheckAllAchievementsComplete()
                 if (!achievementList[i].unlocked)
                     return;
     achievementList[KING_OF_LIBERTY_CITY].unlocked = true;
+    DebugHelpPrint(KING_OF_LIBERTY_CITY);
     //TODO add to list of achievements to pop up somehow (events?)
     //TODO: test
 }
@@ -684,6 +717,16 @@ void AchievementManager::CheckForCheats()
     //TODO: test
 }
 
+void DebugHelpPrint(int achievementID)
+{
+    if (DEBUG)
+    {
+        const char* unlockmessage = AchievementManager::achievementList[achievementID].name.c_str();
+        wchar_t* wtestmessage = new wchar_t[strlen(unlockmessage) + 1];
+        mbstowcs_s(NULL, wtestmessage, strlen(unlockmessage) + 1, unlockmessage, strlen(unlockmessage));
+        CHud::SetHelpMessage(wtestmessage, false);
+    }
+}
 
 //TODO: This should be defined via plugin to call the game's function directly
 int32_t AchievementManager::Read4BytesFromScript(uint32_t* pIp) {
