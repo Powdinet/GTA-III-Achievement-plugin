@@ -92,6 +92,9 @@ static wchar_t* wcheat0 = new wchar_t[strlen(cheat0) + 1];
 static wchar_t* wcheat1 = new wchar_t[strlen(cheat1) + 1];
 static wchar_t* wcheatmessage = new wchar_t[strlen(cheat1) + 1];
 
+//debug print
+void DebugHelpPrint(int achievementID);
+
 class AchievementManager
 {
 public:
