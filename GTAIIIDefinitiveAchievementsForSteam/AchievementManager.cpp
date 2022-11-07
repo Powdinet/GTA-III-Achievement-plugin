@@ -7,6 +7,7 @@
 #include "CTheScripts.h"
 #include "CReplay.h"
 #include "CHud.h"
+#include "CText.h" //TODO: for testing, remove later
 #include "AchievementManager.h"
 
 //achievement list
@@ -700,18 +701,16 @@ void AchievementManager::CheckAllAchievementsComplete()
 
 void AchievementManager::CheckForCheats()
 {
-    
-    //CHud::SetHelpMessage(wcheat0, false);
-
     if (cheated)
         return;
     //This is a hacky solution but I don't think I can do better
-    if (wcsstr(CHud::m_HelpMessage, wcheat0) ||
+    if (wcsstr(CHud::m_HelpMessage, wcheat0)||
         wcsstr(CHud::m_HelpMessage, wcheat1))
     {
         cheated = true;
-        //TODO: currently crashes because the SDK is missing definitions for Steam version
+        //TODO: currently crashes because ???
         CHud::SetHelpMessage(wcheatmessage, false);
+        //CHud::SetHelpMessage(TheText.Get("HM_1"), false); //TODO: for testing, remove later (this works btw)
     }
 
     //TODO: test
