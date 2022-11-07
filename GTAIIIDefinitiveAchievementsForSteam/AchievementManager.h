@@ -90,7 +90,7 @@ static char* cheat1 = "Cheat";
 static char* cheatmessage = "Games in which cheats have been activated cannot unlock achievements.";
 static wchar_t* wcheat0 = new wchar_t[strlen(cheat0) + 1];
 static wchar_t* wcheat1 = new wchar_t[strlen(cheat1) + 1];
-static wchar_t* wcheatmessage = new wchar_t[strlen(cheat1) + 1];
+static wchar_t* wcheatmessage = new wchar_t[strlen(cheatmessage) + 1];
 
 //debug print
 void DebugHelpPrint(int achievementID);

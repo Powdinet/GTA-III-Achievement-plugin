@@ -7,7 +7,6 @@
 #include "CTheScripts.h"
 #include "CReplay.h"
 #include "CHud.h"
-#include "CText.h" //TODO: for testing, remove later
 #include "AchievementManager.h"
 
 //achievement list
@@ -167,7 +166,7 @@ void AchievementManager::Init()
     mbstowcs_s(NULL, wcheat1, strlen(cheat1) + 1, cheat1, strlen(cheat1));
     mbstowcs_s(NULL, wcheatmessage, strlen(cheatmessage) + 1, cheatmessage, strlen(cheatmessage));
 
-    if(cheated) //currently crashes due to SDK
+    if(cheated)
         CHud::SetHelpMessage(wcheatmessage, true);
 }
 
@@ -708,12 +707,8 @@ void AchievementManager::CheckForCheats()
         wcsstr(CHud::m_HelpMessage, wcheat1))
     {
         cheated = true;
-        //TODO: currently crashes because ???
         CHud::SetHelpMessage(wcheatmessage, false);
-        //CHud::SetHelpMessage(TheText.Get("HM_1"), false); //TODO: for testing, remove later (this works btw)
     }
-
-    //TODO: test
 }
 
 void DebugHelpPrint(int achievementID)
