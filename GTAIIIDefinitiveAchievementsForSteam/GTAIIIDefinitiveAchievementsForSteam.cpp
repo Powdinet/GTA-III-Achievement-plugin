@@ -26,6 +26,18 @@ public:
         //TODO: any kind of write makes the game crash
 
         Events::gameProcessEvent += AchievementManager::CheckAchievements;
+        Events::gameProcessEvent += []
+        {   //TODO: for testing, remove
+            static unsigned int lastkeypress = 0;
+            static char* testmessage = "The Whoop has been Shooped.";
+            static wchar_t* wtestmessage = new wchar_t[strlen(testmessage) + 1];
+            if (KeyPressed('R') && CTimer::m_snTimeInMilliseconds - lastkeypress > 500)
+            {
+                lastkeypress = CTimer::m_snTimeInMilliseconds;
+                mbstowcs_s(NULL, wtestmessage, strlen(testmessage) + 1, testmessage, strlen(testmessage));
+                CHud::SetHelpMessage(wtestmessage, false);
+            }
+        };
         //Events::shutdownRwEvent += AchievementManager::Save;//TODO: is this the game close event?
         
     }
