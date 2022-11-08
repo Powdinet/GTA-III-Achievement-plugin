@@ -84,6 +84,8 @@ static uint32_t VIGILANTE_KILLS_IN_ROW_GLOBAL_INDEX = 1409 * 4;
 static uint32_t FIREFIGHTER_FIRES_IN_ROW_GLOBAL_INDEX = 1371 * 4;
 static uint32_t TOTAL_RAMPAGES_PASSED = 841 * 4;
 
+bool isShooting(CPed* ped);
+
 //cheat variables
 static char* cheat0 = "cheat";
 static char* cheat1 = "Cheat";
@@ -95,6 +97,7 @@ static wchar_t* wcheatmessage = new wchar_t[strlen(cheatmessage) + 1];
 //debug print
 void DebugHelpPrint(int achievementID);
 void DebugHelpPrint(char* message);
+static int debugNextPrintTime;
 
 class AchievementManager
 {

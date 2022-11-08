@@ -23,8 +23,7 @@ public:
 
         //TODO: something to detect new game/loaded save and reset/read helper variables
         
-        //TODO: any kind of write makes the game crash
-
+        //TODO: Events::gameProcessEvent += AchievementManager::HandleNewGameAndLoads;
         Events::gameProcessEvent += AchievementManager::CheckAchievements;
         Events::gameProcessEvent += []
         {   //TODO: for testing, remove

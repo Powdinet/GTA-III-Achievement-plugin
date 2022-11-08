@@ -160,7 +160,7 @@ void AchievementManager::Init()
     }
     //TODO: load in any extra data
     //TODO: could save extra data in unused global variables so they would be attached to the save files.
-    //Just need to detect new games / save loads properly and save into those areas whenever the variables are updated
+    //Just need to detect new games / save loads properly and save into those areas whenever the variables are updated (need separate functions for detecting new game/load game to load progression achievements correctly + reset helper variables)
 
     //setup cheat variables
     mbstowcs_s(NULL, wcheat0, strlen(cheat0) + 1, cheat0, strlen(cheat0));
@@ -187,8 +187,8 @@ void AchievementManager::CheckAchievements()
     {
         if (!CTimer::m_UserPause && !CTimer::m_CodePause && !CReplay::Mode)
         {
-            /*CheckStatBasedAchievements();
-            CheckMissionCompleteAchievements();
+            CheckStatBasedAchievements();
+            /*CheckMissionCompleteAchievements();
             CheckSpecialMissionAchievements();
             CheckBribeAchievement();
             CheckMoneyAchievements();
@@ -198,13 +198,14 @@ void AchievementManager::CheckAchievements()
             CheckCriminalsInARow();
             CheckFuriousFirstResponder();
             CheckExportAchievements();
-            CheckGangsKillsAchievements();
+            CheckGangsKillsAchievements();*/
             CheckLibertyCityMinute();
-            CheckRoadkillAchievement();*/
+            CheckRoadkillAchievement();
             CheckFullArtilleryAchievement();/*
-            CheckAllAchievementsComplete();*/
+            //CheckAllAchievementsComplete();*/
         }
     }
+    //DebugHelpPrint((char*)std::to_string(CWorld::Players[CWorld::PlayerInFocus].m_nCollectablesCollected).c_str());//TODO remove
 }
 
 /*
@@ -212,7 +213,7 @@ void AchievementManager::CheckAchievements()
 */
 void AchievementManager::CheckStatBasedAchievements()
 {
-    if (!achievementList[DISPOSING_OF_THE_EVIDENCE].unlocked &&
+    /*if (!achievementList[DISPOSING_OF_THE_EVIDENCE].unlocked &&
         CStats::CarsCrushed >= 1)
     {
         achievementList[DISPOSING_OF_THE_EVIDENCE].unlocked = true;
@@ -228,7 +229,7 @@ void AchievementManager::CheckStatBasedAchievements()
         DebugHelpPrint(BY_A_MILE);
         //TODO add to list of achievements to pop up somehow (events?)
         //TODO test
-    }
+    }*/
 
     if (!achievementList[WRECKLESS_DRIVING].unlocked &&
         CStats::BestStuntJump > 0 && CStats::BestStuntJump % 2 == 0) //Perfect Stunts all have even values
@@ -236,7 +237,6 @@ void AchievementManager::CheckStatBasedAchievements()
         achievementList[WRECKLESS_DRIVING].unlocked = true;
         DebugHelpPrint(WRECKLESS_DRIVING);
         //TODO add to list of achievements to pop up somehow (events?)
-        //TODO test
     }
 
     if (!achievementList[WHEELS_UP].unlocked &&
@@ -245,10 +245,10 @@ void AchievementManager::CheckStatBasedAchievements()
         achievementList[WHEELS_UP].unlocked = true;
         DebugHelpPrint(WHEELS_UP);
         //TODO add to list of achievements to pop up somehow (events?)
-        //TODO test
     }
+    /*else { DebugHelpPrint((char*)std::to_string(CStats::NumberOfUniqueJumpsFound).c_str()); }*///TODO: remove, was only for testing
 
-    if (!achievementList[WHERE_TO].unlocked &&
+    /*if (!achievementList[WHERE_TO].unlocked &&
         CStats::PassengersDroppedOffWithTaxi >= 100) //For some reason the variable is called "found", but it's completion
     {
         achievementList[WHERE_TO].unlocked = true;
@@ -287,7 +287,7 @@ void AchievementManager::CheckStatBasedAchievements()
         //TODO add to list of achievements to pop up somehow (events?)
         //TODO test
     }
-    
+    */
     if (!achievementList[LIBERTY_CITY_SECRETS].unlocked)
     {
         CPlayerInfo* player = &CWorld::Players[CWorld::PlayerInFocus];
@@ -296,19 +296,17 @@ void AchievementManager::CheckStatBasedAchievements()
             achievementList[LIBERTY_CITY_SECRETS].unlocked = true;
             DebugHelpPrint(LIBERTY_CITY_SECRETS);
             //TODO add to list of achievements to pop up somehow (events?)
-            //TODO test
         }
     }
-
+    
     if (!achievementList[IS_THAT_ALL_YOUVE_GOT].unlocked &&
         CStats::ProgressMade >= CStats::TotalProgressInGame)
     {
         achievementList[IS_THAT_ALL_YOUVE_GOT].unlocked = true;
         DebugHelpPrint(IS_THAT_ALL_YOUVE_GOT);
         //TODO add to list of achievements to pop up somehow (events?)
-        //TODO test
     }
-    
+    /*
     if (!achievementList[HUNTING_SEASON].unlocked &&
         CStats::HelisDestroyed >= 5)
     {
@@ -352,7 +350,7 @@ void AchievementManager::CheckStatBasedAchievements()
         DebugHelpPrint(RECYCLER);
         //TODO add to list of achievements to pop up somehow (events?)
         //TODO test
-    }
+    }*/
 }
 
 /*
@@ -634,7 +632,6 @@ void AchievementManager::CheckLibertyCityMinute()
                     achievementList[LIBERTY_CITY_MINUTE].unlocked = true;
                     DebugHelpPrint(LIBERTY_CITY_MINUTE);
                     //TODO add to list of achievements to pop up somehow (events?)
-                    //TODO: test
                     lcmState = LCM_COMPLETE;
                 }
             }
@@ -666,7 +663,6 @@ void AchievementManager::CheckRoadkillAchievement()
                 achievementList[AM_WALKIN_HERE].unlocked = true;
                 DebugHelpPrint(AM_WALKIN_HERE);
                 //TODO add to list of achievements to pop up somehow (events?)
-                //TODO: test
             }
         }
     }
@@ -679,24 +675,27 @@ void AchievementManager::CheckFullArtilleryAchievement()
 {
     if (!achievementList[FULL_ARTILLERY].unlocked)
     {
+        
         CPlayerInfo* player = &CWorld::Players[CWorld::PlayerInFocus];
-        if (((CPed*)player->m_pPed)->m_nPedFlags.bIsShooting)
+        if (isShooting(player->m_pPed))
         {
             fullArtilleryWeaponBitMask |= 1 << player->m_pPed->m_nCurrentWeapon;
-            if ((fullArtilleryWeaponBitMask & 0x1FFF) == 0x1FFF)
+            if ((fullArtilleryWeaponBitMask & 0x1FFF) == 0xFFF)
             {
                 achievementList[FULL_ARTILLERY].unlocked = true;
                 DebugHelpPrint(FULL_ARTILLERY);
                 //TODO add to list of achievements to pop up somehow (events?)
-                //TODO: test
             }
         }
-        if (DEBUG)
-        {
-            std::string s = std::to_string(fullArtilleryWeaponBitMask);
-            DebugHelpPrint((char *)s.c_str());
-        }
     }
+}
+
+bool isShooting(CPed* ped)
+{
+    //TODO: there's a bug where it doesn't count as attacking when player is punching while walking at the same time
+    //TODO: there's a bug where after punching the attacking flag is set until something else resets it, so if player switches to bat it still counts even if it isn't used
+    return ped->m_nCurrentWeapon > 1  && (ped->m_nPedFlags.bIsShooting) || //on bullet shot/projectile launched 
+           ped->m_nCurrentWeapon <= 1 && (ped->m_nPedFlags.bIsAttacking); //on attack
 }
 
 /*
@@ -741,11 +740,12 @@ void DebugHelpPrint(int achievementID)
 
 void DebugHelpPrint(char* message)
 {
-    if (DEBUG)
+    if (DEBUG && CTimer::m_snTimeInMilliseconds >= debugNextPrintTime) //TODO: this doesn't reset on new/load game, so it breaks 
     {
         wchar_t* wtestmessage = new wchar_t[strlen(message) + 1];
         mbstowcs_s(NULL, wtestmessage, strlen(message) + 1, message, strlen(message));
         CHud::SetHelpMessage(wtestmessage, false);
+        debugNextPrintTime = CTimer::m_snTimeInMilliseconds + 1000;
     }
 }
 
