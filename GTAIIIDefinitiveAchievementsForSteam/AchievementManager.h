@@ -95,9 +95,15 @@ static wchar_t* wcheat1 = new wchar_t[strlen(cheat1) + 1];
 static wchar_t* wcheatmessage = new wchar_t[strlen(cheatmessage) + 1];
 
 //debug print
-void DebugHelpPrint(int achievementID);
-void DebugHelpPrint(char* message);
+static void DebugHelpPrint(int achievementID);
+static void DebugHelpPrint(char* message);
 static int debugNextPrintTime;
+
+//read values from script
+static int32_t Read4BytesFromScript(uint32_t* pIp);
+static int16_t Read2BytesFromScript(uint32_t* pIp);
+static int8_t Read1ByteFromScript(uint32_t* pIp);
+static float ReadFloatFromScript(uint32_t* pIp);
 
 class AchievementManager
 {
@@ -112,7 +118,7 @@ public:
 
 	//functions
 	static void Init();
-	static void Save();
+	static void SaveAchievements();
 	static void CheckAchievements();
 	static void CheckStatBasedAchievements(); //15
 	static void CheckMissionCompleteAchievements(); //6
@@ -131,6 +137,4 @@ public:
 	static void CheckFullArtilleryAchievement(); //1
 	static void CheckAllAchievementsComplete(); //1
 	static void CheckForCheats();
-	//TODO: This should be defined via plugin to call the game's function directly
-	static int32_t Read4BytesFromScript(uint32_t* pIp);
 };

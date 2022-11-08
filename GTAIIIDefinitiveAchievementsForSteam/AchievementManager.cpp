@@ -171,9 +171,10 @@ void AchievementManager::Init()
         CHud::SetHelpMessage(wcheatmessage, true);
 }
 
-void AchievementManager::Save()
+void AchievementManager::SaveAchievements()
 {
-    //TODO: Saves achievements and helper data (any extra variables needed that aren't in the stats/saved in the savefile
+    //TODO: Runs every time an achievement is unlocked. Saves all achievements in a achievement data file
+    //halper variables are stored in the actual game savefiles by editing the global variable space whenever they're updated, which isn't here
 }
 
 /*
@@ -193,10 +194,10 @@ void AchievementManager::CheckAchievements()
             CheckBribeAchievement();
             CheckMoneyAchievements();
             CheckPhoneAchievement();
-            CheckRampageAchievements();
+            CheckRampageAchievements();*/
             CheckFiresInARow();
             CheckCriminalsInARow();
-            CheckFuriousFirstResponder();
+            /*CheckFuriousFirstResponder();
             CheckExportAchievements();
             CheckGangsKillsAchievements();*/
             CheckLibertyCityMinute();
@@ -244,6 +245,7 @@ void AchievementManager::CheckStatBasedAchievements()
     {
         achievementList[WHEELS_UP].unlocked = true;
         DebugHelpPrint(WHEELS_UP);
+        SaveAchievements();
         //TODO add to list of achievements to pop up somehow (events?)
     }
     /*else { DebugHelpPrint((char*)std::to_string(CStats::NumberOfUniqueJumpsFound).c_str()); }*///TODO: remove, was only for testing
@@ -253,6 +255,7 @@ void AchievementManager::CheckStatBasedAchievements()
     {
         achievementList[WHERE_TO].unlocked = true;
         DebugHelpPrint(WHERE_TO);
+        SaveAchievements();
         //TODO add to list of achievements to pop up somehow (events?)
         //TODO test
     }
@@ -265,6 +268,7 @@ void AchievementManager::CheckStatBasedAchievements()
     {
         achievementList[MAN_TOYZ].unlocked = true;
         DebugHelpPrint(MAN_TOYZ);
+        SaveAchievements();
         //TODO add to list of achievements to pop up somehow (events?)
         //TODO test
     }
@@ -274,6 +278,7 @@ void AchievementManager::CheckStatBasedAchievements()
     {
         achievementList[PLAYING_DOCTOR].unlocked = true;
         DebugHelpPrint(PLAYING_DOCTOR);
+        SaveAchievements();
         //TODO add to list of achievements to pop up somehow (events?)
         //TODO test
     }
@@ -284,6 +289,7 @@ void AchievementManager::CheckStatBasedAchievements()
     {
         achievementList[RIGHT_HAND_MAN].unlocked = true;
         DebugHelpPrint(RIGHT_HAND_MAN);
+        SaveAchievements();
         //TODO add to list of achievements to pop up somehow (events?)
         //TODO test
     }
@@ -295,6 +301,7 @@ void AchievementManager::CheckStatBasedAchievements()
         {
             achievementList[LIBERTY_CITY_SECRETS].unlocked = true;
             DebugHelpPrint(LIBERTY_CITY_SECRETS);
+            SaveAchievements();
             //TODO add to list of achievements to pop up somehow (events?)
         }
     }
@@ -304,6 +311,7 @@ void AchievementManager::CheckStatBasedAchievements()
     {
         achievementList[IS_THAT_ALL_YOUVE_GOT].unlocked = true;
         DebugHelpPrint(IS_THAT_ALL_YOUVE_GOT);
+        SaveAchievements();
         //TODO add to list of achievements to pop up somehow (events?)
     }
     /*
@@ -312,6 +320,7 @@ void AchievementManager::CheckStatBasedAchievements()
     {
         achievementList[HUNTING_SEASON].unlocked = true;
         DebugHelpPrint(HUNTING_SEASON);
+        SaveAchievements();
         //TODO add to list of achievements to pop up somehow (events?)
         //TODO test
     }
@@ -321,6 +330,7 @@ void AchievementManager::CheckStatBasedAchievements()
     {
         achievementList[REPEAT_OFFENDER].unlocked = true;
         DebugHelpPrint(REPEAT_OFFENDER);
+        SaveAchievements();
         //TODO add to list of achievements to pop up somehow (events?)
         //TODO test
     }
@@ -330,6 +340,7 @@ void AchievementManager::CheckStatBasedAchievements()
     {
         achievementList[CHEATERS_DO_PROSPER].unlocked = true;
         DebugHelpPrint(CHEATERS_DO_PROSPER);
+        SaveAchievements();
         //TODO add to list of achievements to pop up somehow (events?)
         //TODO test
     }
@@ -339,6 +350,7 @@ void AchievementManager::CheckStatBasedAchievements()
     {
         achievementList[LIKE_A_BOSS].unlocked = true;
         DebugHelpPrint(LIKE_A_BOSS);
+        SaveAchievements();
         //TODO add to list of achievements to pop up somehow (events?)
         //TODO test
     }
@@ -348,6 +360,7 @@ void AchievementManager::CheckStatBasedAchievements()
     {
         achievementList[RECYCLER].unlocked = true;
         DebugHelpPrint(RECYCLER);
+        SaveAchievements();
         //TODO add to list of achievements to pop up somehow (events?)
         //TODO test
     }*/
@@ -359,6 +372,8 @@ void AchievementManager::CheckStatBasedAchievements()
 void AchievementManager::CheckMissionCompleteAchievements()
 {
     //Different check from Definitive, based on REGISTER_MISSION_PASSED strings
+    //TODO: change to depend on script variables instead, that would be detected in the
+    //extremely unlikely case two different missions pass in the same frame
     const char* lastMission = CStats::LastMissionPassedName;
 
     //First Day on the Job (Luigi's Girls)
@@ -367,6 +382,7 @@ void AchievementManager::CheckMissionCompleteAchievements()
     {
         achievementList[FIRST_DAY_ON_THE_JOB].unlocked = true;
         DebugHelpPrint(FIRST_DAY_ON_THE_JOB);
+        SaveAchievements();
         //TODO add to list of achievements to pop up somehow (events?)
         //TODO test
     }
@@ -377,6 +393,7 @@ void AchievementManager::CheckMissionCompleteAchievements()
     {
         achievementList[A_MARKED_MAN].unlocked = true;
         DebugHelpPrint(A_MARKED_MAN);
+        SaveAchievements();
         //TODO add to list of achievements to pop up somehow (events?)
         //TODO test
     }
@@ -387,6 +404,7 @@ void AchievementManager::CheckMissionCompleteAchievements()
     {
         achievementList[OFFSHORE_DELIVERY].unlocked = true;
         DebugHelpPrint(OFFSHORE_DELIVERY);
+        SaveAchievements();
         //TODO add to list of achievements to pop up somehow (events?)
         //TODO test
     }
@@ -397,6 +415,7 @@ void AchievementManager::CheckMissionCompleteAchievements()
     {
         achievementList[NOT_SO_FAST].unlocked = true;
         DebugHelpPrint(NOT_SO_FAST);
+        SaveAchievements();
         //TODO add to list of achievements to pop up somehow (events?)
         //TODO test
     }
@@ -407,6 +426,7 @@ void AchievementManager::CheckMissionCompleteAchievements()
     {
         achievementList[A_GIFT_FROM_THE_KING].unlocked = true;
         DebugHelpPrint(A_GIFT_FROM_THE_KING);
+        SaveAchievements();
         //TODO add to list of achievements to pop up somehow (events?)
         //TODO test
     }
@@ -417,6 +437,7 @@ void AchievementManager::CheckMissionCompleteAchievements()
     {
         achievementList[GOT_ANY_STORIES_OLD_MAN].unlocked = true;
         DebugHelpPrint(GOT_ANY_STORIES_OLD_MAN);
+        SaveAchievements();
         //TODO add to list of achievements to pop up somehow (events?)
         //TODO test
     }
@@ -457,6 +478,7 @@ void AchievementManager::CheckBribeAchievement()
                     {
                         achievementList[ESCAPE_ARTIST].unlocked = true;
                         DebugHelpPrint(ESCAPE_ARTIST);
+                        SaveAchievements();
                         //TODO add to list of achievements to pop up somehow (events?)
                         //TODO: test
                     }
@@ -477,6 +499,7 @@ void AchievementManager::CheckMoneyAchievements()
     {
         achievementList[CHASING_PAPER].unlocked = true;
         DebugHelpPrint(CHASING_PAPER);
+        SaveAchievements();
         //TODO add to list of achievements to pop up somehow (events?)
         //TODO: test
     }
@@ -486,6 +509,7 @@ void AchievementManager::CheckMoneyAchievements()
     {
         achievementList[DIRTY_MONEY].unlocked = true;
         DebugHelpPrint(DIRTY_MONEY);
+        SaveAchievements();
         //TODO add to list of achievements to pop up somehow (events?)
         //TODO: test
     }
@@ -509,6 +533,7 @@ void AchievementManager::CheckRampageAchievements()
     {
         achievementList[INSTIGATOR].unlocked = true;
         DebugHelpPrint(INSTIGATOR);
+        SaveAchievements();
         //TODO add to list of achievements to pop up somehow (events?)
         //TODO: test
     }
@@ -518,6 +543,7 @@ void AchievementManager::CheckRampageAchievements()
     {
         achievementList[BLOOD_IN_THE_STREETS].unlocked = true;
         DebugHelpPrint(BLOOD_IN_THE_STREETS);
+        SaveAchievements();
         //TODO add to list of achievements to pop up somehow (events?)
         //TODO: test
     }
@@ -533,6 +559,7 @@ void AchievementManager::CheckFiresInARow()
     {
         achievementList[SPLISH_SPLASH].unlocked = true;
         DebugHelpPrint(SPLISH_SPLASH);
+        SaveAchievements();
         //TODO add to list of achievements to pop up somehow (events?)
         //TODO: test
     }
@@ -542,6 +569,7 @@ void AchievementManager::CheckFiresInARow()
     {
         achievementList[RELIEF_PITCHER].unlocked = true;
         DebugHelpPrint(RELIEF_PITCHER);
+        SaveAchievements();
         //TODO add to list of achievements to pop up somehow (events?)
         //TODO: test
     }
@@ -557,8 +585,8 @@ void AchievementManager::CheckCriminalsInARow()
     {
         achievementList[GOING_ROGUE].unlocked = true;
         DebugHelpPrint(GOING_ROGUE);
+        SaveAchievements();
         //TODO add to list of achievements to pop up somehow (events?)
-        //TODO: test
     }
 }
 
@@ -578,6 +606,7 @@ void AchievementManager::CheckFuriousFirstResponder()
     {
         achievementList[FURIOUS_FIRST_RESPONDER].unlocked = true;
         DebugHelpPrint(FURIOUS_FIRST_RESPONDER);
+        SaveAchievements();
         //TODO add to list of achievements to pop up somehow (events?)
 //TODO: test
     }
@@ -605,16 +634,16 @@ void AchievementManager::CheckGangsKillsAchievements()
 */
 void AchievementManager::CheckLibertyCityMinute()
 {
-    //TODO: check player health and just count the time. Note: when player is dead the timer doesn't continue. Obviously, timer resets when health is above 10
     if (!achievementList[LIBERTY_CITY_MINUTE].unlocked)
     {
         CPlayerInfo* player = &CWorld::Players[CWorld::PlayerInFocus];
         switch (lcmState)
         {
+            //I don't know if definitive achievement takes armor into account but it should
         case LCM_WAITING_FOR_10HP:
 
             if (player->m_nPlayerState == PLAYERSTATE_PLAYING &&
-                player->m_pPed->m_fHealth < 10.0 &&
+                player->m_pPed->m_fHealth + player->m_pPed->m_fArmour < 10.0 &&
                 player->m_pPed->m_fHealth > 0.0)
             {
                 lcmStartTime = CTimer::m_snTimeInMilliseconds;
@@ -624,19 +653,20 @@ void AchievementManager::CheckLibertyCityMinute()
             break;
         case LCM_AT_LESS_THAN_10HP:
             if (player->m_nPlayerState == PLAYERSTATE_PLAYING &&
-                player->m_pPed->m_fHealth < 10.0 &&
+                player->m_pPed->m_fHealth + player->m_pPed->m_fArmour < 10.0 &&
                 player->m_pPed->m_fHealth > 0.0)
             {
                 if (CTimer::m_snTimeInMilliseconds - lcmStartTime >= 60000)
                 {
                     achievementList[LIBERTY_CITY_MINUTE].unlocked = true;
                     DebugHelpPrint(LIBERTY_CITY_MINUTE);
+                    SaveAchievements();
                     //TODO add to list of achievements to pop up somehow (events?)
                     lcmState = LCM_COMPLETE;
                 }
             }
             else
-            {
+            {//TODO:test the reset
                 lcmState = LCM_WAITING_FOR_10HP;
             }
             //TODO:
@@ -662,6 +692,7 @@ void AchievementManager::CheckRoadkillAchievement()
             {
                 achievementList[AM_WALKIN_HERE].unlocked = true;
                 DebugHelpPrint(AM_WALKIN_HERE);
+                SaveAchievements();
                 //TODO add to list of achievements to pop up somehow (events?)
             }
         }
@@ -684,6 +715,7 @@ void AchievementManager::CheckFullArtilleryAchievement()
             {
                 achievementList[FULL_ARTILLERY].unlocked = true;
                 DebugHelpPrint(FULL_ARTILLERY);
+                SaveAchievements();
                 //TODO add to list of achievements to pop up somehow (events?)
             }
         }
@@ -710,6 +742,7 @@ void AchievementManager::CheckAllAchievementsComplete()
                     return;
     achievementList[KING_OF_LIBERTY_CITY].unlocked = true;
     DebugHelpPrint(KING_OF_LIBERTY_CITY);
+    SaveAchievements();
     //TODO add to list of achievements to pop up somehow (events?)
     //TODO: test
 }
@@ -727,7 +760,7 @@ void AchievementManager::CheckForCheats()
     }
 }
 
-void DebugHelpPrint(int achievementID)
+static void DebugHelpPrint(int achievementID)
 {
     if (DEBUG)
     {
@@ -738,7 +771,7 @@ void DebugHelpPrint(int achievementID)
     }
 }
 
-void DebugHelpPrint(char* message)
+static void DebugHelpPrint(char* message)
 {
     if (DEBUG && CTimer::m_snTimeInMilliseconds >= debugNextPrintTime) //TODO: this doesn't reset on new/load game, so it breaks 
     {
@@ -749,9 +782,18 @@ void DebugHelpPrint(char* message)
     }
 }
 
-//TODO: This should be defined via plugin to call the game's function directly
-int32_t AchievementManager::Read4BytesFromScript(uint32_t* pIp) {
+int32_t Read4BytesFromScript(uint32_t* pIp) {
     int32_t retval = CTheScripts::ScriptSpace[*pIp + 3] << 24 | CTheScripts::ScriptSpace[*pIp + 2] << 16 | CTheScripts::ScriptSpace[*pIp + 1] << 8 | CTheScripts::ScriptSpace[*pIp];
-    *pIp += 4;
     return retval;
+}
+int16_t Read2BytesFromScript(uint32_t* pIp) {
+    int16_t retval = CTheScripts::ScriptSpace[*pIp + 1] << 8 | CTheScripts::ScriptSpace[*pIp];
+    return retval;
+}
+int8_t Read1ByteFromScript(uint32_t* pIp) {
+    int8_t retval = CTheScripts::ScriptSpace[*pIp];
+    return retval;
+}
+float ReadFloatFromScript(uint32_t* pIp) {
+    return Read2BytesFromScript(pIp) / 16.0f;
 }
