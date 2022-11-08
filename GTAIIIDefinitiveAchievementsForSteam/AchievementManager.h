@@ -94,6 +94,7 @@ static wchar_t* wcheatmessage = new wchar_t[strlen(cheatmessage) + 1];
 
 //debug print
 void DebugHelpPrint(int achievementID);
+void DebugHelpPrint(char* message);
 
 class AchievementManager
 {
@@ -104,6 +105,7 @@ public:
 	//helper variables
 	static uint8_t bribes_pickedup;
 	static bool cheated;
+	static uint16_t fullArtilleryWeaponBitMask;
 
 	//functions
 	static void Init();

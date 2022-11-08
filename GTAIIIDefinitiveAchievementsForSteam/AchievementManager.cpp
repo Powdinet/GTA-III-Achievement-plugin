@@ -15,6 +15,7 @@ AchievementDefinition AchievementManager::achievementList[NUM_ACHIEVEMENTS];
 //helper variables
 uint8_t AchievementManager::bribes_pickedup;
 bool AchievementManager::cheated;
+uint16_t AchievementManager::fullArtilleryWeaponBitMask;
 
 void AchievementManager::Init()
 {
@@ -199,8 +200,8 @@ void AchievementManager::CheckAchievements()
             CheckExportAchievements();
             CheckGangsKillsAchievements();
             CheckLibertyCityMinute();
-            CheckRoadkillAchievement();
-            CheckFullArtilleryAchievement();
+            CheckRoadkillAchievement();*/
+            CheckFullArtilleryAchievement();/*
             CheckAllAchievementsComplete();*/
         }
     }
@@ -580,7 +581,7 @@ void AchievementManager::CheckFuriousFirstResponder()
         achievementList[FURIOUS_FIRST_RESPONDER].unlocked = true;
         DebugHelpPrint(FURIOUS_FIRST_RESPONDER);
         //TODO add to list of achievements to pop up somehow (events?)
-        //TODO: test
+//TODO: test
     }
 }
 
@@ -612,39 +613,39 @@ void AchievementManager::CheckLibertyCityMinute()
         CPlayerInfo* player = &CWorld::Players[CWorld::PlayerInFocus];
         switch (lcmState)
         {
-            case LCM_WAITING_FOR_10HP:
-                
-                if (player->m_nPlayerState == PLAYERSTATE_PLAYING &&
-                    player->m_pPed->m_fHealth < 10.0 &&
-                    player->m_pPed->m_fHealth > 0.0)
+        case LCM_WAITING_FOR_10HP:
+
+            if (player->m_nPlayerState == PLAYERSTATE_PLAYING &&
+                player->m_pPed->m_fHealth < 10.0 &&
+                player->m_pPed->m_fHealth > 0.0)
+            {
+                lcmStartTime = CTimer::m_snTimeInMilliseconds;
+                lcmState = LCM_AT_LESS_THAN_10HP;
+            }
+            //TODO:
+            break;
+        case LCM_AT_LESS_THAN_10HP:
+            if (player->m_nPlayerState == PLAYERSTATE_PLAYING &&
+                player->m_pPed->m_fHealth < 10.0 &&
+                player->m_pPed->m_fHealth > 0.0)
+            {
+                if (CTimer::m_snTimeInMilliseconds - lcmStartTime >= 60000)
                 {
-                    lcmStartTime = CTimer::m_snTimeInMilliseconds;
-                    lcmState = LCM_AT_LESS_THAN_10HP;
+                    achievementList[LIBERTY_CITY_MINUTE].unlocked = true;
+                    DebugHelpPrint(LIBERTY_CITY_MINUTE);
+                    //TODO add to list of achievements to pop up somehow (events?)
+                    //TODO: test
+                    lcmState = LCM_COMPLETE;
                 }
-                //TODO:
-                break;
-            case LCM_AT_LESS_THAN_10HP:
-                if (player->m_nPlayerState == PLAYERSTATE_PLAYING &&
-                    player->m_pPed->m_fHealth < 10.0 &&
-                    player->m_pPed->m_fHealth > 0.0)
-                {
-                    if (CTimer::m_snTimeInMilliseconds - lcmStartTime >= 60000)
-                    {
-                        achievementList[LIBERTY_CITY_MINUTE].unlocked = true;
-                        DebugHelpPrint(LIBERTY_CITY_MINUTE);
-                        //TODO add to list of achievements to pop up somehow (events?)
-                        //TODO: test
-                        lcmState = LCM_COMPLETE;
-                    }
-                }
-                else
-                {
-                    lcmState = LCM_WAITING_FOR_10HP;
-                }
-                //TODO:
-                break;
-            case LCM_COMPLETE:
-                break;
+            }
+            else
+            {
+                lcmState = LCM_WAITING_FOR_10HP;
+            }
+            //TODO:
+            break;
+        case LCM_COMPLETE:
+            break;
         }
     }
 }
@@ -678,7 +679,23 @@ void AchievementManager::CheckFullArtilleryAchievement()
 {
     if (!achievementList[FULL_ARTILLERY].unlocked)
     {
-        //TODO
+        CPlayerInfo* player = &CWorld::Players[CWorld::PlayerInFocus];
+        if (((CPed*)player->m_pPed)->m_nPedFlags.bIsShooting)
+        {
+            fullArtilleryWeaponBitMask |= 1 << player->m_pPed->m_nCurrentWeapon;
+            if ((fullArtilleryWeaponBitMask & 0x1FFF) == 0x1FFF)
+            {
+                achievementList[FULL_ARTILLERY].unlocked = true;
+                DebugHelpPrint(FULL_ARTILLERY);
+                //TODO add to list of achievements to pop up somehow (events?)
+                //TODO: test
+            }
+        }
+        if (DEBUG)
+        {
+            std::string s = std::to_string(fullArtilleryWeaponBitMask);
+            DebugHelpPrint((char *)s.c_str());
+        }
     }
 }
 
@@ -718,6 +735,16 @@ void DebugHelpPrint(int achievementID)
         const char* unlockmessage = AchievementManager::achievementList[achievementID].name.c_str();
         wchar_t* wtestmessage = new wchar_t[strlen(unlockmessage) + 1];
         mbstowcs_s(NULL, wtestmessage, strlen(unlockmessage) + 1, unlockmessage, strlen(unlockmessage));
+        CHud::SetHelpMessage(wtestmessage, false);
+    }
+}
+
+void DebugHelpPrint(char* message)
+{
+    if (DEBUG)
+    {
+        wchar_t* wtestmessage = new wchar_t[strlen(message) + 1];
+        mbstowcs_s(NULL, wtestmessage, strlen(message) + 1, message, strlen(message));
         CHud::SetHelpMessage(wtestmessage, false);
     }
 }
