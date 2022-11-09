@@ -190,9 +190,9 @@ void AchievementManager::CheckAchievements()
             CheckStatBasedAchievements();
             /*CheckMissionCompleteAchievements();
             CheckSpecialMissionAchievements();
-            CheckBribeAchievement();
+            CheckBribeAchievement();*/
             CheckMoneyAchievements();
-            CheckPhoneAchievement();
+            /*CheckPhoneAchievement();
             CheckRampageAchievements();*/
             CheckFiresInARow();
             CheckCriminalsInARow();
