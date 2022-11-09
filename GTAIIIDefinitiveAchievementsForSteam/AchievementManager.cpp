@@ -12,11 +12,6 @@
 //achievement list
 AchievementDefinition AchievementManager::achievementList[NUM_ACHIEVEMENTS];
 
-//helper variables
-uint8_t AchievementManager::bribes_pickedup;
-bool AchievementManager::cheated;
-uint16_t AchievementManager::fullArtilleryWeaponBitMask;
-
 void AchievementManager::Init()
 {
     //TODO: add images, have to look how to do that
@@ -167,8 +162,8 @@ void AchievementManager::Init()
     mbstowcs_s(NULL, wcheat1, strlen(cheat1) + 1, cheat1, strlen(cheat1));
     mbstowcs_s(NULL, wcheatmessage, strlen(cheatmessage) + 1, cheatmessage, strlen(cheatmessage));
 
-    if(cheated)
-        CHud::SetHelpMessage(wcheatmessage, true);
+    /*if(cheated)//TODO: do this on game loads
+        CHud::SetHelpMessage(wcheatmessage, true);*/
 }
 
 void AchievementManager::SaveAchievements()
@@ -183,13 +178,13 @@ void AchievementManager::SaveAchievements()
 void AchievementManager::CheckAchievements()
 {
     CheckForCheats();
-    if (!cheated)
+    if (!Read4BytesFromScript(&CHEAT_ASSIST))
     {
         if (!CTimer::m_UserPause && !CTimer::m_CodePause && !CReplay::Mode)
         {
             CheckStatBasedAchievements();
-            /*CheckMissionCompleteAchievements();
-            CheckSpecialMissionAchievements();
+            CheckMissionCompleteAchievements();
+            /*CheckSpecialMissionAchievements();
             CheckBribeAchievement();*/
             CheckMoneyAchievements();
             /*CheckPhoneAchievement();
@@ -213,23 +208,22 @@ void AchievementManager::CheckAchievements()
 */
 void AchievementManager::CheckStatBasedAchievements()
 {
-    /*if (!achievementList[DISPOSING_OF_THE_EVIDENCE].unlocked &&
+    if (!achievementList[DISPOSING_OF_THE_EVIDENCE].unlocked &&
         CStats::CarsCrushed >= 1)
     {
         achievementList[DISPOSING_OF_THE_EVIDENCE].unlocked = true;
         DebugHelpPrint(DISPOSING_OF_THE_EVIDENCE);
         //TODO add to list of achievements to pop up somehow (events?)
-        //TODO test
     }
 
     if (!achievementList[BY_A_MILE].unlocked &&
-        CStats::ElBurroTime < 180)
+        CStats::ElBurroTime < 180 &&
+        CStats::ElBurroTime > 0)
     {
         achievementList[BY_A_MILE].unlocked = true;
         DebugHelpPrint(BY_A_MILE);
         //TODO add to list of achievements to pop up somehow (events?)
-        //TODO test
-    }*/
+    }
 
     if (!achievementList[WRECKLESS_DRIVING].unlocked &&
         CStats::BestStuntJump > 0 && CStats::BestStuntJump % 2 == 0) //Perfect Stunts all have even values
@@ -247,16 +241,14 @@ void AchievementManager::CheckStatBasedAchievements()
         SaveAchievements();
         //TODO add to list of achievements to pop up somehow (events?)
     }
-    /*else { DebugHelpPrint((char*)std::to_string(CStats::NumberOfUniqueJumpsFound).c_str()); }*///TODO: remove, was only for testing
 
-    /*if (!achievementList[WHERE_TO].unlocked &&
+    if (!achievementList[WHERE_TO].unlocked &&
         CStats::PassengersDroppedOffWithTaxi >= 100)
     {
         achievementList[WHERE_TO].unlocked = true;
         DebugHelpPrint(WHERE_TO);
         SaveAchievements();
         //TODO add to list of achievements to pop up somehow (events?)
-        //TODO test
     }
 
     if (!achievementList[MAN_TOYZ].unlocked &&
@@ -269,7 +261,6 @@ void AchievementManager::CheckStatBasedAchievements()
         DebugHelpPrint(MAN_TOYZ);
         SaveAchievements();
         //TODO add to list of achievements to pop up somehow (events?)
-        //TODO test
     }
     
     if (!achievementList[PLAYING_DOCTOR].unlocked &&
@@ -280,7 +271,7 @@ void AchievementManager::CheckStatBasedAchievements()
         SaveAchievements();
         //TODO add to list of achievements to pop up somehow (events?)
         //TODO test
-    }*/
+    }
 
     int rating = CStats::FindCriminalRatingNumber();
     if (!achievementList[RIGHT_HAND_MAN].unlocked &&
@@ -312,7 +303,7 @@ void AchievementManager::CheckStatBasedAchievements()
         SaveAchievements();
         //TODO add to list of achievements to pop up somehow (events?)
     }
-    /*
+    
     if (!achievementList[HUNTING_SEASON].unlocked &&
         CStats::HelisDestroyed >= 5)
     {
@@ -320,7 +311,6 @@ void AchievementManager::CheckStatBasedAchievements()
         DebugHelpPrint(HUNTING_SEASON);
         SaveAchievements();
         //TODO add to list of achievements to pop up somehow (events?)
-        //TODO test
     }
 
     if (!achievementList[REPEAT_OFFENDER].unlocked &&
@@ -330,7 +320,6 @@ void AchievementManager::CheckStatBasedAchievements()
         DebugHelpPrint(REPEAT_OFFENDER);
         SaveAchievements();
         //TODO add to list of achievements to pop up somehow (events?)
-        //TODO test
     }
 
     if (!achievementList[CHEATERS_DO_PROSPER].unlocked &&
@@ -340,8 +329,7 @@ void AchievementManager::CheckStatBasedAchievements()
         DebugHelpPrint(CHEATERS_DO_PROSPER);
         SaveAchievements();
         //TODO add to list of achievements to pop up somehow (events?)
-        //TODO test
-    }*/
+    }
 
     if (!achievementList[LIKE_A_BOSS].unlocked &&
         rating >= 5000)
@@ -351,7 +339,7 @@ void AchievementManager::CheckStatBasedAchievements()
         SaveAchievements();
         //TODO add to list of achievements to pop up somehow (events?)
     }
-    /*
+    
     if (!achievementList[RECYCLER].unlocked &&
         CStats::CarsCrushed >= 25)
     {
@@ -359,34 +347,29 @@ void AchievementManager::CheckStatBasedAchievements()
         DebugHelpPrint(RECYCLER);
         SaveAchievements();
         //TODO add to list of achievements to pop up somehow (events?)
-        //TODO test
-    }*/
+    }
 }
 
 /*
-    Checks achievements that unlock on mission complete (6)
+    Checks achievements that unlock on mission complete (7)
 */
 void AchievementManager::CheckMissionCompleteAchievements()
 {
-    //Different check from Definitive, based on REGISTER_MISSION_PASSED strings
-    //TODO: change to depend on script variables instead, that would be detected in the
-    //extremely unlikely case two different missions pass in the same frame
-    const char* lastMission = CStats::LastMissionPassedName;
+    //Different check from Definitive, based on mission pass flags
 
     //First Day on the Job (Luigi's Girls)
     if (!achievementList[FIRST_DAY_ON_THE_JOB].unlocked &&
-        !strcmp(lastMission, "LM1"))
+        Read4BytesFromScript(&LUIGIS_GIRLS_COMPLETED))
     {
         achievementList[FIRST_DAY_ON_THE_JOB].unlocked = true;
         DebugHelpPrint(FIRST_DAY_ON_THE_JOB);
         SaveAchievements();
         //TODO add to list of achievements to pop up somehow (events?)
-        //TODO test
     }
 
     //A Marked Man (Last Requests)
     if (!achievementList[A_MARKED_MAN].unlocked &&
-        !strcmp(lastMission, "FM4"))
+        Read4BytesFromScript(&LAST_REQUESTS_COMPLETED))
     {
         achievementList[A_MARKED_MAN].unlocked = true;
         DebugHelpPrint(A_MARKED_MAN);
@@ -397,46 +380,83 @@ void AchievementManager::CheckMissionCompleteAchievements()
 
     //Offshore Delivery (A Drop in the Ocean)
     if (!achievementList[OFFSHORE_DELIVERY].unlocked &&
-        !strcmp(lastMission, "LOVE3"))
+        Read4BytesFromScript(&DROP_IN_THE_OCEAN_COMPLETED))
     {
         achievementList[OFFSHORE_DELIVERY].unlocked = true;
         DebugHelpPrint(OFFSHORE_DELIVERY);
         SaveAchievements();
         //TODO add to list of achievements to pop up somehow (events?)
-        //TODO test
     }
 
     //Not So Fast (The Exchange)
     if (!achievementList[NOT_SO_FAST].unlocked &&
-        !strcmp(lastMission, "CAT2"))
+        Read4BytesFromScript(&THE_EXCHANGE_COMPLETED))
     {
         achievementList[NOT_SO_FAST].unlocked = true;
         DebugHelpPrint(NOT_SO_FAST);
         SaveAchievements();
         //TODO add to list of achievements to pop up somehow (events?)
-        //TODO test
     }
 
     //A Gift From the King (Kingdom Come)
     if (!achievementList[A_GIFT_FROM_THE_KING].unlocked &&
-        !strcmp(lastMission, "YD4"))
+        Read4BytesFromScript(&KINGDOM_COME_COMPLETED))
     {
         achievementList[A_GIFT_FROM_THE_KING].unlocked = true;
         DebugHelpPrint(A_GIFT_FROM_THE_KING);
         SaveAchievements();
         //TODO add to list of achievements to pop up somehow (events?)
-        //TODO test
     }
 
     //Got Any Stories, Old Man? (Cipriani's Chaffeur)
     if (!achievementList[GOT_ANY_STORIES_OLD_MAN].unlocked &&
-        !strcmp(lastMission, "JM4"))
+        Read4BytesFromScript(&CIPRIANIS_CHAUFFEUR_COMPLETED))
     {
         achievementList[GOT_ANY_STORIES_OLD_MAN].unlocked = true;
         DebugHelpPrint(GOT_ANY_STORIES_OLD_MAN);
         SaveAchievements();
         //TODO add to list of achievements to pop up somehow (events?)
         //TODO test
+    }
+
+    if (!achievementList[TALKS_A_LOT].unlocked)
+    {
+        //TODO: this doesn't work because some final missions clear the next one's flag to make them replayable
+        //maybe set an unused flag in global space to act as a new marker for these missions (Bling Bling Scramble and Turismo)
+        if (!Read4BytesFromScript(&KING_COURTNEY_1_ASSIST))
+        {
+            uint32_t value = Read4BytesFromScript(&KING_COURTNEY_1_COMPLETED);
+            if (Read4BytesFromScript(&KING_COURTNEY_1_COMPLETED))
+            {
+                Write4BytesToScript(&KING_COURTNEY_1_ASSIST, 1);
+            }
+        }
+        uint8_t phone_count =
+            Read4BytesFromScript(&MARTY_CHONKS_1_COMPLETED) +
+            Read4BytesFromScript(&MARTY_CHONKS_2_COMPLETED) +
+            Read4BytesFromScript(&MARTY_CHONKS_3_COMPLETED) +
+            Read4BytesFromScript(&MARTY_CHONKS_4_COMPLETED) +
+            Read4BytesFromScript(&EL_BURRO_1_COMPLETED) +
+            Read4BytesFromScript(&EL_BURRO_2_COMPLETED) +
+            Read4BytesFromScript(&EL_BURRO_3_COMPLETED) +
+            Read4BytesFromScript(&EL_BURRO_4_COMPLETED) +
+            Read4BytesFromScript(&KING_COURTNEY_1_ASSIST) +
+            Read4BytesFromScript(&KING_COURTNEY_2_COMPLETED) +
+            Read4BytesFromScript(&KING_COURTNEY_3_COMPLETED) +
+            Read4BytesFromScript(&KING_COURTNEY_4_COMPLETED) +
+            Read4BytesFromScript(&D_ICE_1_COMPLETED) +
+            Read4BytesFromScript(&D_ICE_2_COMPLETED) +
+            Read4BytesFromScript(&D_ICE_3_COMPLETED) +
+            Read4BytesFromScript(&D_ICE_4_COMPLETED) +
+            Read4BytesFromScript(&D_ICE_5_COMPLETED);
+
+        if (phone_count >= 17)
+        {
+            achievementList[TALKS_A_LOT].unlocked = true;
+            DebugHelpPrint(TALKS_A_LOT);
+            SaveAchievements();
+            //TODO add to list of achievements to pop up somehow (events?)
+        }
     }
 }
 
@@ -469,8 +489,9 @@ void AchievementManager::CheckBribeAchievement()
                 //hopefully it works
                 if (CPickups::IsPickUpPickedUp(CPickups::GetActualPickupIndex(CPickups::aPickUps[i].m_nReferenceIndex)))//TODO test this abomination
                 {
+                    int32_t bribes_pickedup = Read4BytesFromScript(&BRIBES_ASSIST);
                     bribes_pickedup++;
-
+                    Write4BytesToScript(&BRIBES_ASSIST, bribes_pickedup);
                     if (bribes_pickedup >= 20)
                     {
                         achievementList[ESCAPE_ARTIST].unlocked = true;
@@ -498,7 +519,6 @@ void AchievementManager::CheckMoneyAchievements()
         DebugHelpPrint(CHASING_PAPER);
         SaveAchievements();
         //TODO add to list of achievements to pop up somehow (events?)
-        //TODO: test
     }
 
     if (!achievementList[DIRTY_MONEY].unlocked &&
@@ -508,16 +528,7 @@ void AchievementManager::CheckMoneyAchievements()
         DebugHelpPrint(DIRTY_MONEY);
         SaveAchievements();
         //TODO add to list of achievements to pop up somehow (events?)
-        //TODO: test
     }
-}
-
-/*
-    Checks for the phone missions achievement (1)
-*/
-void AchievementManager::CheckPhoneAchievement()
-{
-    //TODO Check completion flags in the script, as intended 
 }
 
 /*
@@ -647,7 +658,7 @@ void AchievementManager::CheckLibertyCityMinute()
             //TODO:
             break;
         case LCM_AT_LESS_THAN_10HP:
-            if (player->m_nPlayerState == PLAYERSTATE_PLAYING &&
+            if (player->m_nPlayerState == PLAYERSTATE_PLAYING &&//TODO what is it complaining about
                 player->m_pPed->m_fHealth + player->m_pPed->m_fArmour < 10.0 &&
                 player->m_pPed->m_fHealth > 0.0)
             {
@@ -705,7 +716,9 @@ void AchievementManager::CheckFullArtilleryAchievement()
         CPlayerInfo* player = &CWorld::Players[CWorld::PlayerInFocus];
         if (isShooting(player->m_pPed))
         {
+            uint32_t fullArtilleryWeaponBitMask = (uint16_t)Read4BytesFromScript(&FULLARTILLERY_ASSIST);
             fullArtilleryWeaponBitMask |= 1 << player->m_pPed->m_nCurrentWeapon;
+            Write4BytesToScript(&FULLARTILLERY_ASSIST, fullArtilleryWeaponBitMask);
             if ((fullArtilleryWeaponBitMask & 0x1FFF) == 0xFFF)
             {
                 achievementList[FULL_ARTILLERY].unlocked = true;
@@ -744,13 +757,13 @@ void AchievementManager::CheckAllAchievementsComplete()
 
 void AchievementManager::CheckForCheats()
 {
-    if (cheated)
+    if (Read4BytesFromScript(&CHEAT_ASSIST))
         return;
     //This is a hacky solution but I don't think I can do better
     if (wcsstr(CHud::m_HelpMessage, wcheat0)||
         wcsstr(CHud::m_HelpMessage, wcheat1))
     {
-        cheated = true;
+        Write4BytesToScript(&CHEAT_ASSIST, 1);
         CHud::SetHelpMessage(wcheatmessage, false);
     }
 }
@@ -791,4 +804,9 @@ int8_t Read1ByteFromScript(uint32_t* pIp) {
 }
 float ReadFloatFromScript(uint32_t* pIp) {
     return Read2BytesFromScript(pIp) / 16.0f;
+}
+
+void Write4BytesToScript(uint32_t* pIp, int32_t value)
+{
+    *(int32_t*)&CTheScripts::ScriptSpace[*pIp] = value;
 }

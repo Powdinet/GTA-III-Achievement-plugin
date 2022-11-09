@@ -69,6 +69,7 @@ enum LibertyCityMinuteState
 	LCM_AT_LESS_THAN_10HP,
 	LCM_COMPLETE
 };
+
 //lcm variables not saved!
 static uint8_t lcmState = LCM_WAITING_FOR_10HP;
 static uint32_t lcmStartTime;
@@ -83,6 +84,35 @@ static uint32_t FIREFIGHTER_SHORESIDE_FIRES_GLOBAL_INDEX = 1085 * 4;
 static uint32_t VIGILANTE_KILLS_IN_ROW_GLOBAL_INDEX = 1409 * 4;
 static uint32_t FIREFIGHTER_FIRES_IN_ROW_GLOBAL_INDEX = 1371 * 4;
 static uint32_t TOTAL_RAMPAGES_PASSED = 841 * 4;
+static uint32_t LUIGIS_GIRLS_COMPLETED = 245 * 4;
+static uint32_t LAST_REQUESTS_COMPLETED = 271 * 4;
+static uint32_t DROP_IN_THE_OCEAN_COMPLETED = 337 * 4;
+static uint32_t THE_EXCHANGE_COMPLETED = 368 * 4;
+static uint32_t KINGDOM_COME_COMPLETED = 342 * 4;
+static uint32_t CIPRIANIS_CHAUFFEUR_COMPLETED = 257 * 4;
+static uint32_t MARTY_CHONKS_1_COMPLETED = 289 * 4;
+static uint32_t MARTY_CHONKS_2_COMPLETED = 290 * 4;
+static uint32_t MARTY_CHONKS_3_COMPLETED = 291 * 4;
+static uint32_t MARTY_CHONKS_4_COMPLETED = 292 * 4;
+static uint32_t EL_BURRO_1_COMPLETED = 300 * 4;//this is already an assist variable, "passed_before", perfect for me
+static uint32_t EL_BURRO_2_COMPLETED = 279 * 4;
+static uint32_t EL_BURRO_3_COMPLETED = 280 * 4;
+static uint32_t EL_BURRO_4_COMPLETED = 281 * 4;
+static uint32_t KING_COURTNEY_1_COMPLETED = 339 * 4;
+static uint32_t KING_COURTNEY_2_COMPLETED = 340 * 4;
+static uint32_t KING_COURTNEY_3_COMPLETED = 341 * 4;
+static uint32_t KING_COURTNEY_4_COMPLETED = 342 * 4;
+static uint32_t D_ICE_1_COMPLETED = 359 * 4;
+static uint32_t D_ICE_2_COMPLETED = 360 * 4;
+static uint32_t D_ICE_3_COMPLETED = 361 * 4;
+static uint32_t D_ICE_4_COMPLETED = 362 * 4;
+static uint32_t D_ICE_5_COMPLETED = 363 * 4;
+
+//helper consts (to use to write to script)
+static uint32_t KING_COURTNEY_1_ASSIST = 343 * 4;
+static uint32_t BRIBES_ASSIST = 285 * 4;
+static uint32_t CHEAT_ASSIST = 286 * 4;
+static uint32_t FULLARTILLERY_ASSIST = 287 * 4;
 
 bool isShooting(CPed* ped);
 
@@ -104,6 +134,7 @@ static int32_t Read4BytesFromScript(uint32_t* pIp);
 static int16_t Read2BytesFromScript(uint32_t* pIp);
 static int8_t Read1ByteFromScript(uint32_t* pIp);
 static float ReadFloatFromScript(uint32_t* pIp);
+static void Write4BytesToScript(uint32_t* pIp, int32_t value);
 
 class AchievementManager
 {
@@ -111,21 +142,15 @@ public:
 	//achievement list
 	static AchievementDefinition achievementList[NUM_ACHIEVEMENTS];
 
-	//helper variables
-	static uint8_t bribes_pickedup;
-	static bool cheated;
-	static uint16_t fullArtilleryWeaponBitMask;
-
 	//functions
 	static void Init();
 	static void SaveAchievements();
 	static void CheckAchievements();
 	static void CheckStatBasedAchievements(); //15
-	static void CheckMissionCompleteAchievements(); //6
+	static void CheckMissionCompleteAchievements(); //7
 	static void CheckSpecialMissionAchievements(); //5
 	static void CheckBribeAchievement(); //1
 	static void CheckMoneyAchievements(); //2
-	static void CheckPhoneAchievement(); //1
 	static void CheckRampageAchievements(); //2
 	static void CheckFiresInARow(); //2
 	static void CheckCriminalsInARow(); //1
