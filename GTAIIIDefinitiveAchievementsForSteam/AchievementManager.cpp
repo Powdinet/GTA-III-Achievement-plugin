@@ -187,8 +187,8 @@ void AchievementManager::CheckAchievements()
             /*CheckSpecialMissionAchievements();
             CheckBribeAchievement();*/
             CheckMoneyAchievements();
-            /*CheckPhoneAchievement();
-            CheckRampageAchievements();*/
+            /*CheckPhoneAchievement();*/
+            CheckRampageAchievements();
             CheckFiresInARow();
             CheckCriminalsInARow();
             /*CheckFuriousFirstResponder();
@@ -543,7 +543,6 @@ void AchievementManager::CheckRampageAchievements()
         DebugHelpPrint(INSTIGATOR);
         SaveAchievements();
         //TODO add to list of achievements to pop up somehow (events?)
-        //TODO: test
     }
 
     if (!achievementList[BLOOD_IN_THE_STREETS].unlocked &&
@@ -553,7 +552,6 @@ void AchievementManager::CheckRampageAchievements()
         DebugHelpPrint(BLOOD_IN_THE_STREETS);
         SaveAchievements();
         //TODO add to list of achievements to pop up somehow (events?)
-        //TODO: test
     }
 }
 
