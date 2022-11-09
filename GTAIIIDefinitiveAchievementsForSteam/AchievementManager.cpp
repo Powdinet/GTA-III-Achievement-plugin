@@ -182,7 +182,6 @@ void AchievementManager::SaveAchievements()
 */
 void AchievementManager::CheckAchievements()
 {
-    //TODO: am I able to check for cheats?
     CheckForCheats();
     if (!cheated)
     {
@@ -251,7 +250,7 @@ void AchievementManager::CheckStatBasedAchievements()
     /*else { DebugHelpPrint((char*)std::to_string(CStats::NumberOfUniqueJumpsFound).c_str()); }*///TODO: remove, was only for testing
 
     /*if (!achievementList[WHERE_TO].unlocked &&
-        CStats::PassengersDroppedOffWithTaxi >= 100) //For some reason the variable is called "found", but it's completion
+        CStats::PassengersDroppedOffWithTaxi >= 100)
     {
         achievementList[WHERE_TO].unlocked = true;
         DebugHelpPrint(WHERE_TO);
@@ -281,7 +280,7 @@ void AchievementManager::CheckStatBasedAchievements()
         SaveAchievements();
         //TODO add to list of achievements to pop up somehow (events?)
         //TODO test
-    }
+    }*/
 
     int rating = CStats::FindCriminalRatingNumber();
     if (!achievementList[RIGHT_HAND_MAN].unlocked &&
@@ -291,9 +290,8 @@ void AchievementManager::CheckStatBasedAchievements()
         DebugHelpPrint(RIGHT_HAND_MAN);
         SaveAchievements();
         //TODO add to list of achievements to pop up somehow (events?)
-        //TODO test
     }
-    */
+    
     if (!achievementList[LIBERTY_CITY_SECRETS].unlocked)
     {
         CPlayerInfo* player = &CWorld::Players[CWorld::PlayerInFocus];
@@ -343,7 +341,7 @@ void AchievementManager::CheckStatBasedAchievements()
         SaveAchievements();
         //TODO add to list of achievements to pop up somehow (events?)
         //TODO test
-    }
+    }*/
 
     if (!achievementList[LIKE_A_BOSS].unlocked &&
         rating >= 5000)
@@ -352,9 +350,8 @@ void AchievementManager::CheckStatBasedAchievements()
         DebugHelpPrint(LIKE_A_BOSS);
         SaveAchievements();
         //TODO add to list of achievements to pop up somehow (events?)
-        //TODO test
     }
-
+    /*
     if (!achievementList[RECYCLER].unlocked &&
         CStats::CarsCrushed >= 25)
     {
@@ -561,7 +558,6 @@ void AchievementManager::CheckFiresInARow()
         DebugHelpPrint(SPLISH_SPLASH);
         SaveAchievements();
         //TODO add to list of achievements to pop up somehow (events?)
-        //TODO: test
     }
 
     if (!achievementList[RELIEF_PITCHER].unlocked &&
@@ -571,7 +567,6 @@ void AchievementManager::CheckFiresInARow()
         DebugHelpPrint(RELIEF_PITCHER);
         SaveAchievements();
         //TODO add to list of achievements to pop up somehow (events?)
-        //TODO: test
     }
 }
 
