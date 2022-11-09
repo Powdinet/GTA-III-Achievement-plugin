@@ -4,7 +4,7 @@ using namespace std;
 
 #define DEBUG true
 #define NUM_ACHIEVEMENTS 44
-#define BRIBE_MODEL_ID 115 //TODO: hope this works
+#define BRIBE_MODEL_ID 1383 //TODO: hope this works
 
 //TODO #define ACH_SAVE_FILE some_string
 

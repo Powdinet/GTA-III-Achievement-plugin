@@ -184,8 +184,8 @@ void AchievementManager::CheckAchievements()
         {
             CheckStatBasedAchievements();
             CheckMissionCompleteAchievements();
-            /*CheckSpecialMissionAchievements();
-            CheckBribeAchievement();*/
+            //CheckSpecialMissionAchievements();
+            CheckBribeAchievement();
             CheckMoneyAchievements();
             /*CheckPhoneAchievement();*/
             CheckRampageAchievements();
@@ -375,7 +375,6 @@ void AchievementManager::CheckMissionCompleteAchievements()
         DebugHelpPrint(A_MARKED_MAN);
         SaveAchievements();
         //TODO add to list of achievements to pop up somehow (events?)
-        //TODO test
     }
 
     //Offshore Delivery (A Drop in the Ocean)
@@ -416,7 +415,6 @@ void AchievementManager::CheckMissionCompleteAchievements()
         DebugHelpPrint(GOT_ANY_STORIES_OLD_MAN);
         SaveAchievements();
         //TODO add to list of achievements to pop up somehow (events?)
-        //TODO test
     }
 
     if (!achievementList[TALKS_A_LOT].unlocked)
@@ -480,17 +478,17 @@ void AchievementManager::CheckBribeAchievement()
     if (!achievementList[ESCAPE_ARTIST].unlocked)
     {
         //this is ugly
-        for (int i = 0; i < 336; i++)
+        for (int i = 0; i < 20; i++)
         {
-            if (CPickups::aPickUps[i].m_nModelIndex == BRIBE_MODEL_ID)
+            if (CPickups::aPickUpsCollected[i])
             {
-                //this next function is only supposed to be used via script
-                //but I'm a bad boy so I'm going to use it here
-                //hopefully it works
-                if (CPickups::IsPickUpPickedUp(CPickups::GetActualPickupIndex(CPickups::aPickUps[i].m_nReferenceIndex)))//TODO test this abomination
+                //TODO: there's a bug where if a bribe is picked up in a replay this entire thing breaks until the game is closed
+                if (CPickups::aPickUps[CPickups::GetActualPickupIndex(CPickups::aPickUpsCollected[i])].m_nModelIndex == BRIBE_MODEL_ID)
                 {
+                    CPickups::aPickUpsCollected[i] = 0;
                     int32_t bribes_pickedup = Read4BytesFromScript(&BRIBES_ASSIST);
                     bribes_pickedup++;
+                    DebugHelpPrint((char*)std::to_string(bribes_pickedup).c_str());
                     Write4BytesToScript(&BRIBES_ASSIST, bribes_pickedup);
                     if (bribes_pickedup >= 20)
                     {
@@ -498,10 +496,10 @@ void AchievementManager::CheckBribeAchievement()
                         DebugHelpPrint(ESCAPE_ARTIST);
                         SaveAchievements();
                         //TODO add to list of achievements to pop up somehow (events?)
-                        //TODO: test
                     }
                 }
             }
+            
         }
     }
 }
