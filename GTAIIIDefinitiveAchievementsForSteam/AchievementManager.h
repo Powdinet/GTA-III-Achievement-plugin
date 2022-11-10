@@ -70,9 +70,11 @@ enum LibertyCityMinuteState
 	LCM_COMPLETE
 };
 
-//lcm variables not saved!
+//helper variables that aren't saved!
 static uint8_t lcmState = LCM_WAITING_FOR_10HP;
 static uint32_t lcmStartTime;
+static uint32_t cotpGangMembersKilledLastFrame;
+
 
 //these can't be #defined because they need to be &d to read from script
 static uint32_t VIGILANTE_PORTLAND_KILLS_GLOBAL_INDEX = 1075 * 4;
@@ -113,8 +115,10 @@ static uint32_t KING_COURTNEY_1_ASSIST = 343 * 4;
 static uint32_t BRIBES_ASSIST = 285 * 4;
 static uint32_t CHEAT_ASSIST = 286 * 4;
 static uint32_t FULLARTILLERY_ASSIST = 287 * 4;
+static uint32_t COMEOUTTOPLAY_ASSIST = 288 * 4;
 
 bool isShooting(CPed* ped);
+bool isGangMember(CPed* ped);
 
 //cheat variables
 static char* cheat0 = "cheat";

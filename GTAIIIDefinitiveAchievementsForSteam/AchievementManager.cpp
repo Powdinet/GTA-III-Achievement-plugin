@@ -192,8 +192,8 @@ void AchievementManager::CheckAchievements()
             CheckFiresInARow();
             CheckCriminalsInARow();
             /*CheckFuriousFirstResponder();
-            CheckExportAchievements();
-            CheckGangsKillsAchievements();*/
+            CheckExportAchievements();*/
+            CheckGangsKillsAchievements();
             CheckLibertyCityMinute();
             CheckRoadkillAchievement();
             CheckFullArtilleryAchievement();/*
@@ -419,8 +419,8 @@ void AchievementManager::CheckMissionCompleteAchievements()
 
     if (!achievementList[TALKS_A_LOT].unlocked)
     {
-        //TODO: this doesn't work because some final missions clear the next one's flag to make them replayable
-        //maybe set an unused flag in global space to act as a new marker for these missions (Bling Bling Scramble and Turismo)
+        //Note: Known issue: Bling Bling Scramble won't be marked complete in a save file that 
+        //completed Kingdom Come before achievement plugin is installed. Nothing can be done about this.
         if (!Read4BytesFromScript(&KING_COURTNEY_1_ASSIST))
         {
             uint32_t value = Read4BytesFromScript(&KING_COURTNEY_1_COMPLETED);
@@ -627,8 +627,70 @@ void AchievementManager::CheckExportAchievements()
 */
 void AchievementManager::CheckGangsKillsAchievements()
 {
-    //TODO: count them somehow
-    //Bat and Street Sweeper
+    uint32_t gangKillsThisFrame = CStats::PedsKilledOfThisType[PEDTYPE_GANG9]//TODO: make sure these are defined
+        + CStats::PedsKilledOfThisType[PEDTYPE_GANG8] + CStats::PedsKilledOfThisType[PEDTYPE_GANG7]
+        + CStats::PedsKilledOfThisType[PEDTYPE_GANG6] + CStats::PedsKilledOfThisType[PEDTYPE_GANG5]
+        + CStats::PedsKilledOfThisType[PEDTYPE_GANG4] + CStats::PedsKilledOfThisType[PEDTYPE_GANG3]
+        + CStats::PedsKilledOfThisType[PEDTYPE_GANG2] + CStats::PedsKilledOfThisType[PEDTYPE_GANG1];
+
+    if (!achievementList[STREET_SWEEPER].unlocked)
+    {
+        if (gangKillsThisFrame >= 100)
+        {
+            achievementList[STREET_SWEEPER].unlocked = true;
+            DebugHelpPrint(STREET_SWEEPER);
+            SaveAchievements();
+            //TODO add to list of achievements to pop up somehow (events?)
+        }
+    }
+
+    if (!achievementList[COME_OUT_TO_PLAY].unlocked)
+    {
+        int nPoolSize = CPools::ms_pPedPool->m_nSize;
+
+        //CPlayerInfo* player = &CWorld::Players[CWorld::PlayerInFocus];
+        //for (int32_t i = 0; i < ((CPed*)(player->m_pPed))->m_nNumNearPeds; i++) //doesn't work because nearpeds doesn't mean always the closest peds, so it wasn't registering many kills properly
+        for (int i = 0; i < nPoolSize; i++)
+        {
+            //CPed* victimPed = ((CPed*)(player->m_pPed))->m_apNearPeds[i];
+            CPed* victimPed = CPools::ms_pPedPool->GetAt(i);
+
+            if (victimPed)
+            {
+                if ((victimPed->m_ePedState == PEDSTATE_DEAD || victimPed->m_ePedState == PEDSTATE_DIE) &&
+                    isGangMember(victimPed) &&
+                    (victimPed->m_nLastWepDam == WEAPONTYPE_UNARMED || victimPed->m_nLastWepDam == WEAPONTYPE_BASEBALLBAT))
+                {
+                    //Note: can't check directly for who damaged the ped (feature added in VC)
+                    //Work around is checking if the number of gangmembers killed by player has increased since last frame
+                    //99%+ of the time this will be correct, it's very unlikely for the player to kill someone
+                    //with a bat and another weapon in the same frame
+                    if (gangKillsThisFrame > cotpGangMembersKilledLastFrame)
+                    {
+                        Write4BytesToScript(&COMEOUTTOPLAY_ASSIST, Read4BytesFromScript(&COMEOUTTOPLAY_ASSIST) + 1);
+                        victimPed->m_nLastWepDam = -1;
+                    }
+                }
+            }
+        }
+        if (Read4BytesFromScript(&COMEOUTTOPLAY_ASSIST) >= 25)
+        {
+            achievementList[COME_OUT_TO_PLAY].unlocked = true;
+            DebugHelpPrint(COME_OUT_TO_PLAY);
+            SaveAchievements();
+            //TODO add to list of achievements to pop up somehow (events?)
+        }
+        cotpGangMembersKilledLastFrame = gangKillsThisFrame;
+    }
+}
+
+static bool isGangMember(CPed* ped)
+{
+    return (ped->m_ePedType == PEDTYPE_GANG1 || ped->m_ePedType == PEDTYPE_GANG2 ||
+            ped->m_ePedType == PEDTYPE_GANG3 || ped->m_ePedType == PEDTYPE_GANG4 ||
+            ped->m_ePedType == PEDTYPE_GANG4 || ped->m_ePedType == PEDTYPE_GANG5 ||
+            ped->m_ePedType == PEDTYPE_GANG6 || ped->m_ePedType == PEDTYPE_GANG7 ||
+            ped->m_ePedType == PEDTYPE_GANG8 || ped->m_ePedType == PEDTYPE_GANG9);
 }
 
 /*
@@ -708,11 +770,10 @@ void AchievementManager::CheckFullArtilleryAchievement()
 {
     if (!achievementList[FULL_ARTILLERY].unlocked)
     {
-        
         CPlayerInfo* player = &CWorld::Players[CWorld::PlayerInFocus];
         if (isShooting(player->m_pPed))
         {
-            uint32_t fullArtilleryWeaponBitMask = (uint16_t)Read4BytesFromScript(&FULLARTILLERY_ASSIST);
+            uint32_t fullArtilleryWeaponBitMask = (uint32_t)Read4BytesFromScript(&FULLARTILLERY_ASSIST);
             fullArtilleryWeaponBitMask |= 1 << player->m_pPed->m_nCurrentWeapon;
             Write4BytesToScript(&FULLARTILLERY_ASSIST, fullArtilleryWeaponBitMask);
             if ((fullArtilleryWeaponBitMask & 0x1FFF) == 0xFFF)
