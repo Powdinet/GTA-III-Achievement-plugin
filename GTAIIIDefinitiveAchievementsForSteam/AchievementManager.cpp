@@ -7,6 +7,8 @@
 #include "CTheScripts.h"
 #include "CReplay.h"
 #include "CHud.h"
+#include "CGarages.h"
+#include "CCranes.h"
 #include "AchievementManager.h"
 
 //achievement list
@@ -184,20 +186,19 @@ void AchievementManager::CheckAchievements()
         {
             CheckStatBasedAchievements();
             CheckMissionCompleteAchievements();
-            //CheckSpecialMissionAchievements();
+            CheckSpecialMissionAchievements();
             CheckBribeAchievement();
             CheckMoneyAchievements();
-            /*CheckPhoneAchievement();*/
             CheckRampageAchievements();
             CheckFiresInARow();
             CheckCriminalsInARow();
-            /*CheckFuriousFirstResponder();
-            CheckExportAchievements();*/
+            CheckFuriousFirstResponder();
+            CheckExportAchievements();
             CheckGangsKillsAchievements();
             CheckLibertyCityMinute();
             CheckRoadkillAchievement();
-            CheckFullArtilleryAchievement();/*
-            //CheckAllAchievementsComplete();*/
+            CheckFullArtilleryAchievement();
+            CheckAllAchievementsComplete();
         }
     }
     //DebugHelpPrint((char*)std::to_string(CWorld::Players[CWorld::PlayerInFocus].m_nCollectablesCollected).c_str());//TODO remove
@@ -468,6 +469,8 @@ void AchievementManager::CheckSpecialMissionAchievements()
     //TODO: Planned Ahead (Farewell Chunky Lee Chong)
     //TODO: Got This Figured Out (Fuzz Ball)
     //TODO: Fare Game (Cutting the Grass)
+        //mip >= 131072+6033 && mip <= 131072+6274
+    //ip based checks don't work because duping
 }
 
 /*
@@ -619,7 +622,27 @@ void AchievementManager::CheckFuriousFirstResponder()
 */
 void AchievementManager::CheckExportAchievements()
 {
-    //TODO:
+    if (!achievementList[PLAY_FETCH].unlocked)
+    {
+        if (CGarages::CarTypesCollected[0] == 0xFFFF && CGarages::CarTypesCollected[1] == 0xFFFF)
+        {
+            achievementList[PLAY_FETCH].unlocked = true;
+            DebugHelpPrint(PLAY_FETCH);
+            SaveAchievements();
+            //TODO add to list of achievements to pop up somehow (events?)
+        }
+    }
+
+    if (!achievementList[PEST_CONTROL].unlocked)
+    {
+        if (CCranes::CarsCollectedMilitaryCrane == 0x7F)
+        {
+            achievementList[PEST_CONTROL].unlocked = true;
+            DebugHelpPrint(PEST_CONTROL);
+            SaveAchievements();
+            //TODO add to list of achievements to pop up somehow (events?)
+        }
+    }
 }
 
 /*
@@ -688,9 +711,9 @@ static bool isGangMember(CPed* ped)
 {
     return (ped->m_ePedType == PEDTYPE_GANG1 || ped->m_ePedType == PEDTYPE_GANG2 ||
             ped->m_ePedType == PEDTYPE_GANG3 || ped->m_ePedType == PEDTYPE_GANG4 ||
-            ped->m_ePedType == PEDTYPE_GANG4 || ped->m_ePedType == PEDTYPE_GANG5 ||
-            ped->m_ePedType == PEDTYPE_GANG6 || ped->m_ePedType == PEDTYPE_GANG7 ||
-            ped->m_ePedType == PEDTYPE_GANG8 || ped->m_ePedType == PEDTYPE_GANG9);
+            ped->m_ePedType == PEDTYPE_GANG5 || ped->m_ePedType == PEDTYPE_GANG6 ||
+            ped->m_ePedType == PEDTYPE_GANG7 || ped->m_ePedType == PEDTYPE_GANG8 ||
+            ped->m_ePedType == PEDTYPE_GANG9);
 }
 
 /*
@@ -707,18 +730,17 @@ void AchievementManager::CheckLibertyCityMinute()
         case LCM_WAITING_FOR_10HP:
 
             if (player->m_nPlayerState == PLAYERSTATE_PLAYING &&
-                player->m_pPed->m_fHealth + player->m_pPed->m_fArmour < 10.0 &&
-                player->m_pPed->m_fHealth > 0.0)
+                player->m_pPed->m_fHealth + player->m_pPed->m_fArmour < 10.0f &&
+                player->m_pPed->m_fHealth > 0.0f)
             {
                 lcmStartTime = CTimer::m_snTimeInMilliseconds;
                 lcmState = LCM_AT_LESS_THAN_10HP;
             }
-            //TODO:
             break;
         case LCM_AT_LESS_THAN_10HP:
-            if (player->m_nPlayerState == PLAYERSTATE_PLAYING &&//TODO what is it complaining about
-                player->m_pPed->m_fHealth + player->m_pPed->m_fArmour < 10.0 &&
-                player->m_pPed->m_fHealth > 0.0)
+            if (player->m_nPlayerState == PLAYERSTATE_PLAYING &&
+                (player->m_pPed->m_fHealth) + (player->m_pPed->m_fArmour) < 10.0f &&
+                player->m_pPed->m_fHealth > 0.0f)
             {
                 if (CTimer::m_snTimeInMilliseconds - lcmStartTime >= 60000)
                 {
