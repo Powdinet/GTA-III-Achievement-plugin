@@ -465,7 +465,39 @@ void AchievementManager::CheckMissionCompleteAchievements()
 void AchievementManager::CheckSpecialMissionAchievements()
 {
     //TODO: Without a Scratch (Mike Lips)
-
+    if (!achievementList[WITHOUT_A_SCRATCH].unlocked)
+    {
+        if (!Read4BytesFromScript(&WITHOUT_A_SCRATCH_BLOCKED))
+        {
+            CVehicle* pCar = CPools::ms_pVehiclePool->GetAtRef(Read4BytesFromScript(&MIKE_LIPS_CAR));
+            if (pCar && pCar->m_fHealth > 700 && !pCar->m_nVehicleFlags.bIsDamaged)
+            {
+                //In order for this mission to fail, the car has to be dead (which makes it eventually despawn)
+                //timer has to run out
+                //or player dies (which makes the car eventually despawn=
+                //So need to check 
+                CPed* pPed = CPools::ms_pPedPool->GetAtRef(Read4BytesFromScript(&MIKE_LIPS_PED));
+                if (pPed)
+                {
+                    //If Mike Lips has spawned and we still managed to reach this, the job is done.
+                    achievementList[WITHOUT_A_SCRATCH].unlocked = true;
+                    DebugHelpPrint(WITHOUT_A_SCRATCH);
+                    SaveAchievements();
+                    //TODO add to list of achievements to pop up somehow (events?)
+                }
+            }
+            else
+            {
+                //TODO: if a car with id 0 spawns, this could break. maybe write -1 for this
+                //and for every other ped/car needed when a new game is started
+                if (Read4BytesFromScript(&MIKE_LIPS_CAR))//check if a car has existed at some point in the past
+                {
+                    //car has despawned or been damaged, it's over
+                    Write4BytesToScript(&WITHOUT_A_SCRATCH_BLOCKED, 1);
+                }
+            }
+        }
+    }
 
     //Mob Boss (Triads and Tribulations)
     if (!achievementList[MOB_BOSS].unlocked)
@@ -606,7 +638,7 @@ void AchievementManager::CheckSpecialMissionAchievements()
         {
             //Prevent being able to complete with old references
             //As unlikely as it is for the player to have a car and 8 passengers with the exact same ids as the ones Fuzz Ball set
-            Write4BytesToScript(&FUZZ_BALL_CAR, 0);
+            Write4BytesToScript(&FUZZ_BALL_CAR, -1);
         }
     }
 
@@ -638,7 +670,7 @@ void AchievementManager::CheckSpecialMissionAchievements()
             {
                 //Variable only reset on mission start
                 //Reset it here to prevent a random ped spawning with the same id later on triggering the unlock
-                Write4BytesToScript(&CURLY_BOB_LEAVING_PLAYER_CAR_FLAG, 0);
+                Write4BytesToScript(&CURLY_BOB_LEAVING_PLAYER_CAR_FLAG, -1);
             }
         }
     }
