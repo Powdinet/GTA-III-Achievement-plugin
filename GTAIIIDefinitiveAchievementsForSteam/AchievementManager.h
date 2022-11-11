@@ -78,15 +78,7 @@ enum PlannedAheadState
 	PA_COMPLETE
 };
 
-//helper variables that aren't saved!
-static uint8_t lcmState = LCM_WAITING_FOR_10HP;
-static uint32_t lcmStartTime;
-static uint32_t cotpGangMembersKilledLastFrame;
-static uint32_t pa_state;
-static uint32_t pa_which_car;
-
-
-//these can't be #defined because they need to be &d to read from script
+//these can't be #defined because they need to be &ed to read from script
 static uint32_t VIGILANTE_PORTLAND_KILLS_GLOBAL_INDEX = 1075 * 4;
 static uint32_t VIGILANTE_STAUNTON_KILLS_GLOBAL_INDEX = 1076 * 4;
 static uint32_t VIGILANTE_SHORESIDE_KILLS_GLOBAL_INDEX = 1077 * 4;
@@ -132,13 +124,16 @@ static uint32_t TRIBULATIONS_TRIADSDEAD = 1945 * 4;
 static uint32_t MIKE_LIPS_CAR = 1754 * 4;
 static uint32_t MIKE_LIPS_PED = 141 * 4;
 static uint32_t WITHOUT_A_SCRATCH_BLOCKED = 1760 * 4;
-
-//helper consts (to use to write to script)
 static uint32_t KING_COURTNEY_1_ASSIST = 343 * 4;
 static uint32_t BRIBES_ASSIST = 285 * 4;
 static uint32_t CHEAT_ASSIST = 286 * 4;
 static uint32_t FULLARTILLERY_ASSIST = 287 * 4;
 static uint32_t COMEOUTTOPLAY_ASSIST = 288 * 4;
+static uint32_t LCM_STATE = 293 * 4;
+static uint32_t LCM_START_TIME = 294 * 4;
+static uint32_t COTP_GANG_MEMBERS_KILLED_LAST_FRAME = 295 * 4;
+static uint32_t PA_STATE = 296 * 4;
+static uint32_t PA_WHICH_CAR = 297 * 4;
 
 bool isShooting(CPed* ped);
 bool isGangMember(CPed* ped);
@@ -173,6 +168,7 @@ public:
 	//functions
 	static void Init();
 	static void SaveAchievements();
+	static void ResetAchievements();
 	static void CheckAchievements();
 	static void CheckStatBasedAchievements(); //15
 	static void CheckMissionCompleteAchievements(); //7

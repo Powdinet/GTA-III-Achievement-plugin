@@ -168,10 +168,27 @@ void AchievementManager::Init()
         CHud::SetHelpMessage(wcheatmessage, true);*/
 }
 
+//TODO: a routine that checks for game loads/ new games and resets helper variables
+
+/*
+    Saves achievements to a save file
+*/
 void AchievementManager::SaveAchievements()
 {
     //TODO: Runs every time an achievement is unlocked. Saves all achievements in a achievement data file
     //halper variables are stored in the actual game savefiles by editing the global variable space whenever they're updated, which isn't here
+}
+
+/*
+    Resets all achievements
+*/
+void AchievementManager::ResetAchievements()
+{
+    for (int i = 0; i < NUM_ACHIEVEMENTS; i++)
+    {
+        achievementList[i].unlocked = false;
+    }
+    SaveAchievements();
 }
 
 /*
@@ -519,15 +536,15 @@ void AchievementManager::CheckSpecialMissionAchievements()
 
     //Planned Ahead
     if (!achievementList[PLANNED_AHEAD].unlocked)
-    {
+    {//TODO: test with new saves
         //This code is very messy but there was no simple way to check it that worked
         CPed* pPed = CPools::ms_pPedPool->GetAtRef(Read4BytesFromScript(&CHUNKY_PED));
-        switch (pa_state)
+        switch (Read4BytesFromScript(&PA_STATE))
         {
         case PA_WAITING_FOR_CHUNKY_TO_EXIST:
             if (pPed)
             {
-                pa_state = PA_WAITING_FOR_CHUNKY_IN_ARMED_CAR;
+                Write4BytesToScript(&PA_STATE, PA_WAITING_FOR_CHUNKY_IN_ARMED_CAR);
             }
             break;
         case PA_WAITING_FOR_CHUNKY_IN_ARMED_CAR:
@@ -540,33 +557,33 @@ void AchievementManager::CheckSpecialMissionAchievements()
                     if (pPed->m_pVehicle == pCar1)
                     {
                         if(isCarArmedWithBomb(pCar1))
-                            pa_which_car = 1;
+                            Write4BytesToScript(&PA_WHICH_CAR, 1);
                     }
                     else
                     {
                         if (pPed->m_pVehicle == pCar2)
                         {
                             if (isCarArmedWithBomb(pCar2))
-                                pa_which_car = 2;
+                                Write4BytesToScript(&PA_WHICH_CAR, 2);
                         }
                     }
-                    if (pa_which_car > 0)
+                    if (Read4BytesFromScript(&PA_WHICH_CAR) > 0)
                     {
-                        pa_state = PA_WAITING_FOR_BOOM;
+                        Write4BytesToScript(&PA_STATE, PA_WAITING_FOR_BOOM);
                     }
                 }
             }
             else
             {
                 //Chunky is dead before he got into an armed car
-                pa_state = PA_WAITING_FOR_CHUNKY_TO_EXIST;
+                Write4BytesToScript(&PA_STATE, PA_WAITING_FOR_CHUNKY_TO_EXIST);
             }
             break;
         case PA_WAITING_FOR_BOOM:
             CVehicle* pCar = NULL;
-            if (pa_which_car == 1)
+            if (Read4BytesFromScript(&PA_WHICH_CAR) == 1)
                 pCar = CPools::ms_pVehiclePool->GetAtRef(Read4BytesFromScript(&CHUNKY_CAR1));
-            if (pa_which_car == 2)
+            if (Read4BytesFromScript(&PA_WHICH_CAR) == 2)
                 pCar = CPools::ms_pVehiclePool->GetAtRef(Read4BytesFromScript(&CHUNKY_CAR2));
 
             if (pCar)
@@ -578,7 +595,7 @@ void AchievementManager::CheckSpecialMissionAchievements()
                     if (!pPed || pPed->m_fHealth <= 0.0f)
                     {
                         //Chunky dead but car isn't, reset
-                        pa_state = PA_WAITING_FOR_CHUNKY_TO_EXIST;
+                        Write4BytesToScript(&PA_STATE, PA_WAITING_FOR_CHUNKY_TO_EXIST);
                     }
                 }
                 else
@@ -593,20 +610,20 @@ void AchievementManager::CheckSpecialMissionAchievements()
                         DebugHelpPrint(PLANNED_AHEAD);
                         SaveAchievements();
                         //TODO add to list of achievements to pop up somehow (events?)
-                        pa_state = PA_COMPLETE;
+                        Write4BytesToScript(&PA_STATE, PA_COMPLETE);
                         
                     }
                     else
                     {
                         //Well, if ain't dead, the car certainly didn't kill him.
-                        pa_state = PA_WAITING_FOR_CHUNKY_TO_EXIST;
+                        Write4BytesToScript(&PA_STATE, PA_WAITING_FOR_CHUNKY_TO_EXIST);
                     }
                 }
             }
             else
             {
                 //Does a car explosion kill Chunky if nobody is around to hear it?
-                pa_state = PA_WAITING_FOR_CHUNKY_TO_EXIST;
+                Write4BytesToScript(&PA_STATE, PA_WAITING_FOR_CHUNKY_TO_EXIST);
             }
             break;
         }
@@ -674,9 +691,6 @@ void AchievementManager::CheckSpecialMissionAchievements()
             }
         }
     }
-
-
-    //in general just mip won't be good because of duping and other manipulations
 }
 
 bool isCarArmedWithBomb(CVehicle* car)
@@ -684,7 +698,6 @@ bool isCarArmedWithBomb(CVehicle* car)
     return ((CAutomobile*)car)->m_nAutomobileFlags.nBombType == BOMB_IGNITION_ACTIVATED ||
         ((CAutomobile*)car)->m_nAutomobileFlags.nBombType == BOMB_TIMED_ACTIVATED ||
         ((CAutomobile*)car)->m_nAutomobileFlags.nBombType == BOMB_STICKY;
-
 }
 
 /*
@@ -705,7 +718,7 @@ void AchievementManager::CheckBribeAchievement()
                     CPickups::aPickUpsCollected[i] = 0;
                     int32_t bribes_pickedup = Read4BytesFromScript(&BRIBES_ASSIST);
                     bribes_pickedup++;
-                    DebugHelpPrint((char*)std::to_string(bribes_pickedup).c_str());
+                    DebugHelpPrint((char*)std::to_string(bribes_pickedup).c_str());//TODO remove
                     Write4BytesToScript(&BRIBES_ASSIST, bribes_pickedup);
                     if (bribes_pickedup >= 20)
                     {
@@ -882,7 +895,7 @@ void AchievementManager::CheckGangsKillsAchievements()
     }
 
     if (!achievementList[COME_OUT_TO_PLAY].unlocked)
-    {
+    {//TODO: test with new saves
         int nPoolSize = CPools::ms_pPedPool->m_nSize;
 
         //CPlayerInfo* player = &CWorld::Players[CWorld::PlayerInFocus];
@@ -902,7 +915,7 @@ void AchievementManager::CheckGangsKillsAchievements()
                     //Work around is checking if the number of gangmembers killed by player has increased since last frame
                     //99%+ of the time this will be correct, it's very unlikely for the player to kill someone
                     //with a bat and another weapon in the same frame
-                    if (gangKillsThisFrame > cotpGangMembersKilledLastFrame)
+                    if (gangKillsThisFrame > Read4BytesFromScript(&COTP_GANG_MEMBERS_KILLED_LAST_FRAME))
                     {
                         Write4BytesToScript(&COMEOUTTOPLAY_ASSIST, Read4BytesFromScript(&COMEOUTTOPLAY_ASSIST) + 1);
                         victimPed->m_nLastWepDam = -1;
@@ -917,7 +930,7 @@ void AchievementManager::CheckGangsKillsAchievements()
             SaveAchievements();
             //TODO add to list of achievements to pop up somehow (events?)
         }
-        cotpGangMembersKilledLastFrame = gangKillsThisFrame;
+        Write4BytesToScript(&COTP_GANG_MEMBERS_KILLED_LAST_FRAME, gangKillsThisFrame);
     }
 }
 
@@ -934,11 +947,11 @@ static bool isGangMember(CPed* ped)
     Checks time player has been under 10HP and unlocks that achievement (1)
 */
 void AchievementManager::CheckLibertyCityMinute()
-{
+{//TODO: test with the new saves
     if (!achievementList[LIBERTY_CITY_MINUTE].unlocked)
     {
         CPlayerInfo* player = &CWorld::Players[CWorld::PlayerInFocus];
-        switch (lcmState)
+        switch (Read4BytesFromScript(&LCM_STATE))
         {
             //I don't know if definitive achievement takes armor into account but it should
         case LCM_WAITING_FOR_10HP:
@@ -947,8 +960,8 @@ void AchievementManager::CheckLibertyCityMinute()
                 player->m_pPed->m_fHealth + player->m_pPed->m_fArmour < 10.0f &&
                 player->m_pPed->m_fHealth > 0.0f)
             {
-                lcmStartTime = CTimer::m_snTimeInMilliseconds;
-                lcmState = LCM_AT_LESS_THAN_10HP;
+                Write4BytesToScript(&LCM_START_TIME, CTimer::m_snTimeInMilliseconds);
+                Write4BytesToScript(&LCM_STATE, LCM_AT_LESS_THAN_10HP);
             }
             break;
         case LCM_AT_LESS_THAN_10HP:
@@ -956,22 +969,19 @@ void AchievementManager::CheckLibertyCityMinute()
                 (player->m_pPed->m_fHealth) + (player->m_pPed->m_fArmour) < 10.0f &&
                 player->m_pPed->m_fHealth > 0.0f)
             {
-                if (CTimer::m_snTimeInMilliseconds - lcmStartTime >= 60000)
+                if (CTimer::m_snTimeInMilliseconds - Read4BytesFromScript(&LCM_START_TIME) >= 60000)
                 {
                     achievementList[LIBERTY_CITY_MINUTE].unlocked = true;
                     DebugHelpPrint(LIBERTY_CITY_MINUTE);
                     SaveAchievements();
                     //TODO add to list of achievements to pop up somehow (events?)
-                    lcmState = LCM_COMPLETE;
+                    Write4BytesToScript(&LCM_STATE, LCM_COMPLETE);
                 }
             }
             else
             {//TODO:test the reset
-                lcmState = LCM_WAITING_FOR_10HP;
+                Write4BytesToScript(&LCM_STATE, LCM_WAITING_FOR_10HP);
             }
-            //TODO:
-            break;
-        case LCM_COMPLETE:
             break;
         }
     }
