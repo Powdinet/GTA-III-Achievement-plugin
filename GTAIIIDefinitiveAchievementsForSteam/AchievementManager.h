@@ -109,6 +109,9 @@ static uint32_t D_ICE_2_COMPLETED = 360 * 4;
 static uint32_t D_ICE_3_COMPLETED = 361 * 4;
 static uint32_t D_ICE_4_COMPLETED = 362 * 4;
 static uint32_t D_ICE_5_COMPLETED = 363 * 4;
+static uint32_t CURLY_BOB_LEAVING_PLAYER_CAR_FLAG = 2104 * 4;
+static uint32_t CURLY_BOB_PED = 2082 * 4;//TODO: remove the unused ones
+
 
 //helper consts (to use to write to script)
 static uint32_t KING_COURTNEY_1_ASSIST = 343 * 4;

@@ -468,9 +468,59 @@ void AchievementManager::CheckSpecialMissionAchievements()
     //TODO: Mob Boss (Triads and Tribulations)
     //TODO: Planned Ahead (Farewell Chunky Lee Chong)
     //TODO: Got This Figured Out (Fuzz Ball)
-    //TODO: Fare Game (Cutting the Grass)
-        //mip >= 131072+6033 && mip <= 131072+6274
-    //ip based checks don't work because duping
+        
+    //Fare Game
+    if (!achievementList[FARE_GAME].unlocked)
+    {
+        //flag_taxi1_exit_car_fm2
+        //This flag is set when Curly Bob is told to leave player's car when it reaches the docks, which is the same as the definitive unlock timing
+        //However, the flag is also set in the odd case where the mission fails when the player stays still for over 10000ms
+        //The mission fails immediately and also deletes Curly immediately
+        //Therefore, if flag_taxi1_exit_car_fm2 is set and if Curly Bob still exists, it is unlocked
+        //As an extra condition (different from Definitive), I'm requiring Curly to start leaving the vehicle and not just simply triggering the marker
+        //This is because Curly Bob doesn't start exiting (PEDSTATE_EXIT_CAR) right after being given the objective to do so (OBJECTIVE_LEAVE_CAR)
+        //Usually this wouldn't matter, but this version has the glitch with pausing on markers to trigger them, so it makes sense to only unlock the achievement once he starts getting out.
+        if (Read4BytesFromScript(&CURLY_BOB_LEAVING_PLAYER_CAR_FLAG)) //if Curly Bob told to leave car
+        {
+            CPed* pPed = CPools::ms_pPedPool->GetAtRef(Read4BytesFromScript(&CURLY_BOB_PED));
+            if (pPed)
+            {
+                if (pPed->m_ePedState == PEDSTATE_EXIT_CAR)
+                {
+                    achievementList[FARE_GAME].unlocked = true;
+                    DebugHelpPrint(FARE_GAME);
+                    SaveAchievements();
+                    //TODO add to list of achievements to pop up somehow (events?)
+                }
+            }
+            else
+            {
+                //Variable only reset on mission start
+                //Reset it here to prevent a random ped spawning with the same id later on triggering the unlock
+                Write4BytesToScript(&CURLY_BOB_LEAVING_PLAYER_CAR_FLAG, 0);
+            }
+        }
+
+
+        //TODO: work on?
+         //flag_taxi1_exit_car_fm2
+        //This flag is set when Curly Bob is told to leave player's car when it reaches the docks, which is the same as the definitive unlock timing
+        //However, the flag is also set in the odd case where the mission fails when the player stays still for over 10000ms
+        //When the player stops, it activates a different flag and, crucially, sets timerb to 0
+        //So this achievement can be checked with only the flag for Curly Bob getting out and timerb being 0
+        /*if (Read4BytesFromScript(&CURLY_BOB_LEAVING_PLAYER_CAR_FLAG) && //if Curly Bob told to leave car
+            !Read4BytesFromScript(&CURLY_BOB_CAR_STOPPED))              //if player car not stopped
+        {
+            achievementList[FARE_GAME].unlocked = true;
+            DebugHelpPrint(FARE_GAME);
+            SaveAchievements();
+            //TODO add to list of achievements to pop up somehow (events?)
+            //TODO test
+        }*/
+    }
+
+
+    //in general just mip won't be good because of duping and other manipulations
 }
 
 /*
