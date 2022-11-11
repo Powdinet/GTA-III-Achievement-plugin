@@ -378,85 +378,85 @@ void AchievementManager::CheckMissionCompleteAchievements()
         //TODO add to list of achievements to pop up somehow (events?)
     }
 
-//Offshore Delivery (A Drop in the Ocean)
-if (!achievementList[OFFSHORE_DELIVERY].unlocked &&
-    Read4BytesFromScript(&DROP_IN_THE_OCEAN_COMPLETED))
-{
-    achievementList[OFFSHORE_DELIVERY].unlocked = true;
-    DebugHelpPrint(OFFSHORE_DELIVERY);
-    SaveAchievements();
-    //TODO add to list of achievements to pop up somehow (events?)
-}
-
-//Not So Fast (The Exchange)
-if (!achievementList[NOT_SO_FAST].unlocked &&
-    Read4BytesFromScript(&THE_EXCHANGE_COMPLETED))
-{
-    achievementList[NOT_SO_FAST].unlocked = true;
-    DebugHelpPrint(NOT_SO_FAST);
-    SaveAchievements();
-    //TODO add to list of achievements to pop up somehow (events?)
-}
-
-//A Gift From the King (Kingdom Come)
-if (!achievementList[A_GIFT_FROM_THE_KING].unlocked &&
-    Read4BytesFromScript(&KINGDOM_COME_COMPLETED))
-{
-    achievementList[A_GIFT_FROM_THE_KING].unlocked = true;
-    DebugHelpPrint(A_GIFT_FROM_THE_KING);
-    SaveAchievements();
-    //TODO add to list of achievements to pop up somehow (events?)
-}
-
-//Got Any Stories, Old Man? (Cipriani's Chaffeur)
-if (!achievementList[GOT_ANY_STORIES_OLD_MAN].unlocked &&
-    Read4BytesFromScript(&CIPRIANIS_CHAUFFEUR_COMPLETED))
-{
-    achievementList[GOT_ANY_STORIES_OLD_MAN].unlocked = true;
-    DebugHelpPrint(GOT_ANY_STORIES_OLD_MAN);
-    SaveAchievements();
-    //TODO add to list of achievements to pop up somehow (events?)
-}
-
-if (!achievementList[TALKS_A_LOT].unlocked)
-{
-    //Note: Known issue: Bling Bling Scramble won't be marked complete in a save file that 
-    //completed Kingdom Come before achievement plugin is installed. Nothing can be done about this.
-    if (!Read4BytesFromScript(&KING_COURTNEY_1_ASSIST))
+    //Offshore Delivery (A Drop in the Ocean)
+    if (!achievementList[OFFSHORE_DELIVERY].unlocked &&
+        Read4BytesFromScript(&DROP_IN_THE_OCEAN_COMPLETED))
     {
-        uint32_t value = Read4BytesFromScript(&KING_COURTNEY_1_COMPLETED);
-        if (Read4BytesFromScript(&KING_COURTNEY_1_COMPLETED))
-        {
-            Write4BytesToScript(&KING_COURTNEY_1_ASSIST, 1);
-        }
-    }
-    uint8_t phone_count =
-        Read4BytesFromScript(&MARTY_CHONKS_1_COMPLETED) +
-        Read4BytesFromScript(&MARTY_CHONKS_2_COMPLETED) +
-        Read4BytesFromScript(&MARTY_CHONKS_3_COMPLETED) +
-        Read4BytesFromScript(&MARTY_CHONKS_4_COMPLETED) +
-        Read4BytesFromScript(&EL_BURRO_1_COMPLETED) +
-        Read4BytesFromScript(&EL_BURRO_2_COMPLETED) +
-        Read4BytesFromScript(&EL_BURRO_3_COMPLETED) +
-        Read4BytesFromScript(&EL_BURRO_4_COMPLETED) +
-        Read4BytesFromScript(&KING_COURTNEY_1_ASSIST) +
-        Read4BytesFromScript(&KING_COURTNEY_2_COMPLETED) +
-        Read4BytesFromScript(&KING_COURTNEY_3_COMPLETED) +
-        Read4BytesFromScript(&KING_COURTNEY_4_COMPLETED) +
-        Read4BytesFromScript(&D_ICE_1_COMPLETED) +
-        Read4BytesFromScript(&D_ICE_2_COMPLETED) +
-        Read4BytesFromScript(&D_ICE_3_COMPLETED) +
-        Read4BytesFromScript(&D_ICE_4_COMPLETED) +
-        Read4BytesFromScript(&D_ICE_5_COMPLETED);
-
-    if (phone_count >= 17)
-    {
-        achievementList[TALKS_A_LOT].unlocked = true;
-        DebugHelpPrint(TALKS_A_LOT);
+        achievementList[OFFSHORE_DELIVERY].unlocked = true;
+        DebugHelpPrint(OFFSHORE_DELIVERY);
         SaveAchievements();
         //TODO add to list of achievements to pop up somehow (events?)
     }
-}
+
+    //Not So Fast (The Exchange)
+    if (!achievementList[NOT_SO_FAST].unlocked &&
+        Read4BytesFromScript(&THE_EXCHANGE_COMPLETED))
+    {
+        achievementList[NOT_SO_FAST].unlocked = true;
+        DebugHelpPrint(NOT_SO_FAST);
+        SaveAchievements();
+        //TODO add to list of achievements to pop up somehow (events?)
+    }
+
+    //A Gift From the King (Kingdom Come)
+    if (!achievementList[A_GIFT_FROM_THE_KING].unlocked &&
+        Read4BytesFromScript(&KINGDOM_COME_COMPLETED))
+    {
+        achievementList[A_GIFT_FROM_THE_KING].unlocked = true;
+        DebugHelpPrint(A_GIFT_FROM_THE_KING);
+        SaveAchievements();
+        //TODO add to list of achievements to pop up somehow (events?)
+    }
+
+    //Got Any Stories, Old Man? (Cipriani's Chaffeur)
+    if (!achievementList[GOT_ANY_STORIES_OLD_MAN].unlocked &&
+        Read4BytesFromScript(&CIPRIANIS_CHAUFFEUR_COMPLETED))
+    {
+        achievementList[GOT_ANY_STORIES_OLD_MAN].unlocked = true;
+        DebugHelpPrint(GOT_ANY_STORIES_OLD_MAN);
+        SaveAchievements();
+        //TODO add to list of achievements to pop up somehow (events?)
+    }
+
+    if (!achievementList[TALKS_A_LOT].unlocked)
+    {
+        //Note: Known issue: Bling Bling Scramble won't be marked complete in a save file that 
+        //completed Kingdom Come before achievement plugin is installed. Nothing can be done about this.
+        if (!Read4BytesFromScript(&KING_COURTNEY_1_ASSIST))
+        {
+            uint32_t value = Read4BytesFromScript(&KING_COURTNEY_1_COMPLETED);
+            if (Read4BytesFromScript(&KING_COURTNEY_1_COMPLETED))
+            {
+                Write4BytesToScript(&KING_COURTNEY_1_ASSIST, 1);
+            }
+        }
+        uint8_t phone_count =
+            Read4BytesFromScript(&MARTY_CHONKS_1_COMPLETED) +
+            Read4BytesFromScript(&MARTY_CHONKS_2_COMPLETED) +
+            Read4BytesFromScript(&MARTY_CHONKS_3_COMPLETED) +
+            Read4BytesFromScript(&MARTY_CHONKS_4_COMPLETED) +
+            Read4BytesFromScript(&EL_BURRO_1_COMPLETED) +
+            Read4BytesFromScript(&EL_BURRO_2_COMPLETED) +
+            Read4BytesFromScript(&EL_BURRO_3_COMPLETED) +
+            Read4BytesFromScript(&EL_BURRO_4_COMPLETED) +
+            Read4BytesFromScript(&KING_COURTNEY_1_ASSIST) +
+            Read4BytesFromScript(&KING_COURTNEY_2_COMPLETED) +
+            Read4BytesFromScript(&KING_COURTNEY_3_COMPLETED) +
+            Read4BytesFromScript(&KING_COURTNEY_4_COMPLETED) +
+            Read4BytesFromScript(&D_ICE_1_COMPLETED) +
+            Read4BytesFromScript(&D_ICE_2_COMPLETED) +
+            Read4BytesFromScript(&D_ICE_3_COMPLETED) +
+            Read4BytesFromScript(&D_ICE_4_COMPLETED) +
+            Read4BytesFromScript(&D_ICE_5_COMPLETED);
+
+        if (phone_count >= 17)
+        {
+            achievementList[TALKS_A_LOT].unlocked = true;
+            DebugHelpPrint(TALKS_A_LOT);
+            SaveAchievements();
+            //TODO add to list of achievements to pop up somehow (events?)
+        }
+    }
 }
 
 /*
@@ -465,7 +465,25 @@ if (!achievementList[TALKS_A_LOT].unlocked)
 void AchievementManager::CheckSpecialMissionAchievements()
 {
     //TODO: Without a Scratch (Mike Lips)
-    //TODO: Mob Boss (Triads and Tribulations)
+
+
+    //Mob Boss (Triads and Tribulations)
+    if (!achievementList[MOB_BOSS].unlocked)
+    {
+        CPed* pMafia1 = CPools::ms_pPedPool->GetAtRef(Read4BytesFromScript(&TRIBULATIONS_MAFIA1));
+        CPed* pMafia2 = CPools::ms_pPedPool->GetAtRef(Read4BytesFromScript(&TRIBULATIONS_MAFIA2));
+        if (Read4BytesFromScript(&TRIBULATIONS_TRIADSDEAD) == 3) //mission pass condition
+        {
+            if (pMafia1 && pMafia1->m_fHealth > 0.0f &&
+                pMafia2 && pMafia2->m_fHealth > 0.0f)
+            {
+                achievementList[MOB_BOSS].unlocked = true;
+                DebugHelpPrint(MOB_BOSS);
+                SaveAchievements();
+                //TODO add to list of achievements to pop up somehow (events?)
+            }
+        }
+    }
 
     //Planned Ahead
     if (!achievementList[PLANNED_AHEAD].unlocked)
@@ -543,7 +561,6 @@ void AchievementManager::CheckSpecialMissionAchievements()
                         DebugHelpPrint(PLANNED_AHEAD);
                         SaveAchievements();
                         //TODO add to list of achievements to pop up somehow (events?)
-                        //test
                         pa_state = PA_COMPLETE;
                         
                     }
@@ -562,10 +579,6 @@ void AchievementManager::CheckSpecialMissionAchievements()
             break;
         }
     }
-    else
-    {
-    DebugHelpPrint("It's done");
- }
 
     //Got This Figured Out
     if (!achievementList[GOT_THIS_FIGURED_OUT].unlocked)

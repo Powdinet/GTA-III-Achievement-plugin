@@ -126,6 +126,9 @@ static uint32_t FUZZ_BALL_PROSTITUTE[8] = { 1683 * 4, 1684 * 4, 1685 * 4, 1686 *
 static uint32_t CHUNKY_PED = 142 * 4;
 static uint32_t CHUNKY_CAR1 = 1765 * 4;
 static uint32_t CHUNKY_CAR2 = 1766 * 4;
+static uint32_t TRIBULATIONS_MAFIA1 = 1955 * 4;
+static uint32_t TRIBULATIONS_MAFIA2 = 1956 * 4;
+static uint32_t TRIBULATIONS_TRIADSDEAD = 1945 * 4;
 
 //helper consts (to use to write to script)
 static uint32_t KING_COURTNEY_1_ASSIST = 343 * 4;
