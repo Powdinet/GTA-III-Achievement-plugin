@@ -70,10 +70,20 @@ enum LibertyCityMinuteState
 	LCM_COMPLETE
 };
 
+enum PlannedAheadState
+{
+	PA_WAITING_FOR_CHUNKY_TO_EXIST,
+	PA_WAITING_FOR_CHUNKY_IN_ARMED_CAR,
+	PA_WAITING_FOR_BOOM,
+	PA_COMPLETE
+};
+
 //helper variables that aren't saved!
 static uint8_t lcmState = LCM_WAITING_FOR_10HP;
 static uint32_t lcmStartTime;
 static uint32_t cotpGangMembersKilledLastFrame;
+static uint32_t pa_state;
+static uint32_t pa_which_car;
 
 
 //these can't be #defined because they need to be &d to read from script
@@ -110,8 +120,12 @@ static uint32_t D_ICE_3_COMPLETED = 361 * 4;
 static uint32_t D_ICE_4_COMPLETED = 362 * 4;
 static uint32_t D_ICE_5_COMPLETED = 363 * 4;
 static uint32_t CURLY_BOB_LEAVING_PLAYER_CAR_FLAG = 2104 * 4;
-static uint32_t CURLY_BOB_PED = 2082 * 4;//TODO: remove the unused ones
-
+static uint32_t CURLY_BOB_PED = 2082 * 4;
+static uint32_t FUZZ_BALL_CAR = 1664 * 4;
+static uint32_t FUZZ_BALL_PROSTITUTE[8] = { 1683 * 4, 1684 * 4, 1685 * 4, 1686 * 4, 1687 * 4, 1688 * 4, 1689 * 4, 1690 * 4 };
+static uint32_t CHUNKY_PED = 142 * 4;
+static uint32_t CHUNKY_CAR1 = 1765 * 4;
+static uint32_t CHUNKY_CAR2 = 1766 * 4;
 
 //helper consts (to use to write to script)
 static uint32_t KING_COURTNEY_1_ASSIST = 343 * 4;
@@ -122,6 +136,7 @@ static uint32_t COMEOUTTOPLAY_ASSIST = 288 * 4;
 
 bool isShooting(CPed* ped);
 bool isGangMember(CPed* ped);
+bool isCarArmedWithBomb(CVehicle* car);
 
 //cheat variables
 static char* cheat0 = "cheat";

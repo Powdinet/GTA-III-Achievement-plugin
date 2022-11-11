@@ -378,85 +378,85 @@ void AchievementManager::CheckMissionCompleteAchievements()
         //TODO add to list of achievements to pop up somehow (events?)
     }
 
-    //Offshore Delivery (A Drop in the Ocean)
-    if (!achievementList[OFFSHORE_DELIVERY].unlocked &&
-        Read4BytesFromScript(&DROP_IN_THE_OCEAN_COMPLETED))
-    {
-        achievementList[OFFSHORE_DELIVERY].unlocked = true;
-        DebugHelpPrint(OFFSHORE_DELIVERY);
-        SaveAchievements();
-        //TODO add to list of achievements to pop up somehow (events?)
-    }
+//Offshore Delivery (A Drop in the Ocean)
+if (!achievementList[OFFSHORE_DELIVERY].unlocked &&
+    Read4BytesFromScript(&DROP_IN_THE_OCEAN_COMPLETED))
+{
+    achievementList[OFFSHORE_DELIVERY].unlocked = true;
+    DebugHelpPrint(OFFSHORE_DELIVERY);
+    SaveAchievements();
+    //TODO add to list of achievements to pop up somehow (events?)
+}
 
-    //Not So Fast (The Exchange)
-    if (!achievementList[NOT_SO_FAST].unlocked &&
-        Read4BytesFromScript(&THE_EXCHANGE_COMPLETED))
-    {
-        achievementList[NOT_SO_FAST].unlocked = true;
-        DebugHelpPrint(NOT_SO_FAST);
-        SaveAchievements();
-        //TODO add to list of achievements to pop up somehow (events?)
-    }
+//Not So Fast (The Exchange)
+if (!achievementList[NOT_SO_FAST].unlocked &&
+    Read4BytesFromScript(&THE_EXCHANGE_COMPLETED))
+{
+    achievementList[NOT_SO_FAST].unlocked = true;
+    DebugHelpPrint(NOT_SO_FAST);
+    SaveAchievements();
+    //TODO add to list of achievements to pop up somehow (events?)
+}
 
-    //A Gift From the King (Kingdom Come)
-    if (!achievementList[A_GIFT_FROM_THE_KING].unlocked &&
-        Read4BytesFromScript(&KINGDOM_COME_COMPLETED))
-    {
-        achievementList[A_GIFT_FROM_THE_KING].unlocked = true;
-        DebugHelpPrint(A_GIFT_FROM_THE_KING);
-        SaveAchievements();
-        //TODO add to list of achievements to pop up somehow (events?)
-    }
+//A Gift From the King (Kingdom Come)
+if (!achievementList[A_GIFT_FROM_THE_KING].unlocked &&
+    Read4BytesFromScript(&KINGDOM_COME_COMPLETED))
+{
+    achievementList[A_GIFT_FROM_THE_KING].unlocked = true;
+    DebugHelpPrint(A_GIFT_FROM_THE_KING);
+    SaveAchievements();
+    //TODO add to list of achievements to pop up somehow (events?)
+}
 
-    //Got Any Stories, Old Man? (Cipriani's Chaffeur)
-    if (!achievementList[GOT_ANY_STORIES_OLD_MAN].unlocked &&
-        Read4BytesFromScript(&CIPRIANIS_CHAUFFEUR_COMPLETED))
-    {
-        achievementList[GOT_ANY_STORIES_OLD_MAN].unlocked = true;
-        DebugHelpPrint(GOT_ANY_STORIES_OLD_MAN);
-        SaveAchievements();
-        //TODO add to list of achievements to pop up somehow (events?)
-    }
+//Got Any Stories, Old Man? (Cipriani's Chaffeur)
+if (!achievementList[GOT_ANY_STORIES_OLD_MAN].unlocked &&
+    Read4BytesFromScript(&CIPRIANIS_CHAUFFEUR_COMPLETED))
+{
+    achievementList[GOT_ANY_STORIES_OLD_MAN].unlocked = true;
+    DebugHelpPrint(GOT_ANY_STORIES_OLD_MAN);
+    SaveAchievements();
+    //TODO add to list of achievements to pop up somehow (events?)
+}
 
-    if (!achievementList[TALKS_A_LOT].unlocked)
+if (!achievementList[TALKS_A_LOT].unlocked)
+{
+    //Note: Known issue: Bling Bling Scramble won't be marked complete in a save file that 
+    //completed Kingdom Come before achievement plugin is installed. Nothing can be done about this.
+    if (!Read4BytesFromScript(&KING_COURTNEY_1_ASSIST))
     {
-        //Note: Known issue: Bling Bling Scramble won't be marked complete in a save file that 
-        //completed Kingdom Come before achievement plugin is installed. Nothing can be done about this.
-        if (!Read4BytesFromScript(&KING_COURTNEY_1_ASSIST))
+        uint32_t value = Read4BytesFromScript(&KING_COURTNEY_1_COMPLETED);
+        if (Read4BytesFromScript(&KING_COURTNEY_1_COMPLETED))
         {
-            uint32_t value = Read4BytesFromScript(&KING_COURTNEY_1_COMPLETED);
-            if (Read4BytesFromScript(&KING_COURTNEY_1_COMPLETED))
-            {
-                Write4BytesToScript(&KING_COURTNEY_1_ASSIST, 1);
-            }
-        }
-        uint8_t phone_count =
-            Read4BytesFromScript(&MARTY_CHONKS_1_COMPLETED) +
-            Read4BytesFromScript(&MARTY_CHONKS_2_COMPLETED) +
-            Read4BytesFromScript(&MARTY_CHONKS_3_COMPLETED) +
-            Read4BytesFromScript(&MARTY_CHONKS_4_COMPLETED) +
-            Read4BytesFromScript(&EL_BURRO_1_COMPLETED) +
-            Read4BytesFromScript(&EL_BURRO_2_COMPLETED) +
-            Read4BytesFromScript(&EL_BURRO_3_COMPLETED) +
-            Read4BytesFromScript(&EL_BURRO_4_COMPLETED) +
-            Read4BytesFromScript(&KING_COURTNEY_1_ASSIST) +
-            Read4BytesFromScript(&KING_COURTNEY_2_COMPLETED) +
-            Read4BytesFromScript(&KING_COURTNEY_3_COMPLETED) +
-            Read4BytesFromScript(&KING_COURTNEY_4_COMPLETED) +
-            Read4BytesFromScript(&D_ICE_1_COMPLETED) +
-            Read4BytesFromScript(&D_ICE_2_COMPLETED) +
-            Read4BytesFromScript(&D_ICE_3_COMPLETED) +
-            Read4BytesFromScript(&D_ICE_4_COMPLETED) +
-            Read4BytesFromScript(&D_ICE_5_COMPLETED);
-
-        if (phone_count >= 17)
-        {
-            achievementList[TALKS_A_LOT].unlocked = true;
-            DebugHelpPrint(TALKS_A_LOT);
-            SaveAchievements();
-            //TODO add to list of achievements to pop up somehow (events?)
+            Write4BytesToScript(&KING_COURTNEY_1_ASSIST, 1);
         }
     }
+    uint8_t phone_count =
+        Read4BytesFromScript(&MARTY_CHONKS_1_COMPLETED) +
+        Read4BytesFromScript(&MARTY_CHONKS_2_COMPLETED) +
+        Read4BytesFromScript(&MARTY_CHONKS_3_COMPLETED) +
+        Read4BytesFromScript(&MARTY_CHONKS_4_COMPLETED) +
+        Read4BytesFromScript(&EL_BURRO_1_COMPLETED) +
+        Read4BytesFromScript(&EL_BURRO_2_COMPLETED) +
+        Read4BytesFromScript(&EL_BURRO_3_COMPLETED) +
+        Read4BytesFromScript(&EL_BURRO_4_COMPLETED) +
+        Read4BytesFromScript(&KING_COURTNEY_1_ASSIST) +
+        Read4BytesFromScript(&KING_COURTNEY_2_COMPLETED) +
+        Read4BytesFromScript(&KING_COURTNEY_3_COMPLETED) +
+        Read4BytesFromScript(&KING_COURTNEY_4_COMPLETED) +
+        Read4BytesFromScript(&D_ICE_1_COMPLETED) +
+        Read4BytesFromScript(&D_ICE_2_COMPLETED) +
+        Read4BytesFromScript(&D_ICE_3_COMPLETED) +
+        Read4BytesFromScript(&D_ICE_4_COMPLETED) +
+        Read4BytesFromScript(&D_ICE_5_COMPLETED);
+
+    if (phone_count >= 17)
+    {
+        achievementList[TALKS_A_LOT].unlocked = true;
+        DebugHelpPrint(TALKS_A_LOT);
+        SaveAchievements();
+        //TODO add to list of achievements to pop up somehow (events?)
+    }
+}
 }
 
 /*
@@ -466,9 +466,137 @@ void AchievementManager::CheckSpecialMissionAchievements()
 {
     //TODO: Without a Scratch (Mike Lips)
     //TODO: Mob Boss (Triads and Tribulations)
-    //TODO: Planned Ahead (Farewell Chunky Lee Chong)
-    //TODO: Got This Figured Out (Fuzz Ball)
-        
+
+    //Planned Ahead
+    if (!achievementList[PLANNED_AHEAD].unlocked)
+    {
+        //This code is very messy but there was no simple way to check it that worked
+        CPed* pPed = CPools::ms_pPedPool->GetAtRef(Read4BytesFromScript(&CHUNKY_PED));
+        switch (pa_state)
+        {
+        case PA_WAITING_FOR_CHUNKY_TO_EXIST:
+            if (pPed)
+            {
+                pa_state = PA_WAITING_FOR_CHUNKY_IN_ARMED_CAR;
+            }
+            break;
+        case PA_WAITING_FOR_CHUNKY_IN_ARMED_CAR:
+            if (pPed)
+            {
+                if (pPed->m_bInVehicle)
+                {
+                    CVehicle* pCar1 = CPools::ms_pVehiclePool->GetAtRef(Read4BytesFromScript(&CHUNKY_CAR1));
+                    CVehicle* pCar2 = CPools::ms_pVehiclePool->GetAtRef(Read4BytesFromScript(&CHUNKY_CAR2));
+                    if (pPed->m_pVehicle == pCar1)
+                    {
+                        if(isCarArmedWithBomb(pCar1))
+                            pa_which_car = 1;
+                    }
+                    else
+                    {
+                        if (pPed->m_pVehicle == pCar2)
+                        {
+                            if (isCarArmedWithBomb(pCar2))
+                                pa_which_car = 2;
+                        }
+                    }
+                    if (pa_which_car > 0)
+                    {
+                        pa_state = PA_WAITING_FOR_BOOM;
+                    }
+                }
+            }
+            else
+            {
+                //Chunky is dead before he got into an armed car
+                pa_state = PA_WAITING_FOR_CHUNKY_TO_EXIST;
+            }
+            break;
+        case PA_WAITING_FOR_BOOM:
+            CVehicle* pCar = NULL;
+            if (pa_which_car == 1)
+                pCar = CPools::ms_pVehiclePool->GetAtRef(Read4BytesFromScript(&CHUNKY_CAR1));
+            if (pa_which_car == 2)
+                pCar = CPools::ms_pVehiclePool->GetAtRef(Read4BytesFromScript(&CHUNKY_CAR2));
+
+            if (pCar)
+            {
+                if (pCar->m_fHealth > 0.0f)
+                {
+                    //car and Chunky should both still alive
+                    CPed* pPed = CPools::ms_pPedPool->GetAtRef(Read4BytesFromScript(&CHUNKY_PED));
+                    if (!pPed || pPed->m_fHealth <= 0.0f)
+                    {
+                        //Chunky dead but car isn't, reset
+                        pa_state = PA_WAITING_FOR_CHUNKY_TO_EXIST;
+                    }
+                }
+                else
+                {
+                    //Car has exploded, if Chunky was inside the car he would be removed instantly
+                    //This technically allows player to kill Chunky outside the car and it will still count within the same frame
+                    //but to be honest, the chances of that happening are 0.0000001%, and 99.9999999% of those times it would be the car bomb that would kill him anyway
+                    if (!pPed || pPed->m_fHealth <= 0.0f)
+                    {
+                        //Well, he's dead...
+                        achievementList[PLANNED_AHEAD].unlocked = true;
+                        DebugHelpPrint(PLANNED_AHEAD);
+                        SaveAchievements();
+                        //TODO add to list of achievements to pop up somehow (events?)
+                        //test
+                        pa_state = PA_COMPLETE;
+                        
+                    }
+                    else
+                    {
+                        //Well, if ain't dead, the car certainly didn't kill him.
+                        pa_state = PA_WAITING_FOR_CHUNKY_TO_EXIST;
+                    }
+                }
+            }
+            else
+            {
+                //Does a car explosion kill Chunky if nobody is around to hear it?
+                pa_state = PA_WAITING_FOR_CHUNKY_TO_EXIST;
+            }
+            break;
+        }
+    }
+    else
+    {
+    DebugHelpPrint("It's done");
+ }
+
+    //Got This Figured Out
+    if (!achievementList[GOT_THIS_FIGURED_OUT].unlocked)
+    {
+        //Definitive just checks if the number of passengers inside the Coach is 8
+        //I'm checking if each prostitute is inside the Coach
+        CVehicle* pCar = CPools::ms_pVehiclePool->GetAtRef(Read4BytesFromScript(&FUZZ_BALL_CAR));
+        if (pCar)
+        {
+            if (pCar->m_nMaxPassengers == 8)
+            {
+                for (int i = 0; i < 8; i++)
+                {
+                    CPed* pPed = CPools::ms_pPedPool->GetAtRef(Read4BytesFromScript(&FUZZ_BALL_PROSTITUTE[i]));
+                    if (!pPed || !pPed->m_bInVehicle || pPed->m_pVehicle != pCar)
+                        return;
+                }
+                achievementList[GOT_THIS_FIGURED_OUT].unlocked = true;
+                DebugHelpPrint(GOT_THIS_FIGURED_OUT);
+                SaveAchievements();
+                //TODO add to list of achievements to pop up somehow (events?)
+            }
+        }
+        else
+        {
+            //Prevent being able to complete with old references
+            //As unlikely as it is for the player to have a car and 8 passengers with the exact same ids as the ones Fuzz Ball set
+            Write4BytesToScript(&FUZZ_BALL_CAR, 0);
+        }
+    }
+
     //Fare Game
     if (!achievementList[FARE_GAME].unlocked)
     {
@@ -500,27 +628,18 @@ void AchievementManager::CheckSpecialMissionAchievements()
                 Write4BytesToScript(&CURLY_BOB_LEAVING_PLAYER_CAR_FLAG, 0);
             }
         }
-
-
-        //TODO: work on?
-         //flag_taxi1_exit_car_fm2
-        //This flag is set when Curly Bob is told to leave player's car when it reaches the docks, which is the same as the definitive unlock timing
-        //However, the flag is also set in the odd case where the mission fails when the player stays still for over 10000ms
-        //When the player stops, it activates a different flag and, crucially, sets timerb to 0
-        //So this achievement can be checked with only the flag for Curly Bob getting out and timerb being 0
-        /*if (Read4BytesFromScript(&CURLY_BOB_LEAVING_PLAYER_CAR_FLAG) && //if Curly Bob told to leave car
-            !Read4BytesFromScript(&CURLY_BOB_CAR_STOPPED))              //if player car not stopped
-        {
-            achievementList[FARE_GAME].unlocked = true;
-            DebugHelpPrint(FARE_GAME);
-            SaveAchievements();
-            //TODO add to list of achievements to pop up somehow (events?)
-            //TODO test
-        }*/
     }
 
 
     //in general just mip won't be good because of duping and other manipulations
+}
+
+bool isCarArmedWithBomb(CVehicle* car)
+{
+    return ((CAutomobile*)car)->m_nAutomobileFlags.nBombType == BOMB_IGNITION_ACTIVATED ||
+        ((CAutomobile*)car)->m_nAutomobileFlags.nBombType == BOMB_TIMED_ACTIVATED ||
+        ((CAutomobile*)car)->m_nAutomobileFlags.nBombType == BOMB_STICKY;
+
 }
 
 /*
