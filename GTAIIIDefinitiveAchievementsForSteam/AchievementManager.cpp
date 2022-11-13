@@ -9,7 +9,11 @@
 #include "CHud.h"
 #include "CGarages.h"
 #include "CCranes.h"
+#include "CTxdStore.h"
+#include "CSprite2d.h"
 #include "AchievementManager.h"
+#include "AchievementUnlockPopupManager.h"
+#include "debug.h"
 
 //achievement list
 AchievementDefinition AchievementManager::achievementList[NUM_ACHIEVEMENTS];
@@ -20,6 +24,7 @@ void AchievementManager::Init()
     //TODO: could probably read this information from a file and just load it in with a loop
     achievementList[FIRST_DAY_ON_THE_JOB].name = "First Day on the Job";
     achievementList[FIRST_DAY_ON_THE_JOB].description = "Complete \"Luigi's Girls\"";
+    achievementList[FIRST_DAY_ON_THE_JOB].image = "T_GTA3_FirstDay_BC";
 
     achievementList[WITHOUT_A_SCRATCH].name = "Without a Scratch";
     achievementList[WITHOUT_A_SCRATCH].description = "Deliver Mike Lips' car without a scratch on the first attempt";
@@ -51,7 +56,7 @@ void AchievementManager::Init()
     achievementList[WHEELS_UP].name = "Wheels Up";
     achievementList[WHEELS_UP].description = "Complete 20 unique jumps";
 
-    achievementList[COME_OUT_TO_PLAY].name = "Come Out to Play - y - y - y";
+    achievementList[COME_OUT_TO_PLAY].name = "Come Out to Play-y-y-y";
     achievementList[COME_OUT_TO_PLAY].description = "Kill 25 gang members with melee weapons / fists";
 
     achievementList[WHERE_TO].name = "Where To?";
@@ -168,6 +173,36 @@ void AchievementManager::Init()
         CHud::SetHelpMessage(wcheatmessage, true);*/
 }
 
+void AchievementManager::SetupTXDStore()
+{
+    int txd = CTxdStore::AddTxdSlot("achievements");
+    CTxdStore::LoadTxd(txd, "Achievement plugin data\\images\\achievements.txd");
+    CTxdStore::AddRef(txd);
+    CTxdStore::PushCurrentTxd();
+    CTxdStore::SetCurrentTxd(txd);
+
+    for (int i = 0; i < NUM_ACHIEVEMENTS; i++)
+    {
+        if (!achievementList[i].image.empty())
+        {
+            achievementList[i].spriteData->SetTexture((char *)achievementList[i].image.c_str(),"masks");
+        }
+    }
+    CTxdStore::PopCurrentTxd();
+}
+
+void AchievementManager::RemoveTXDStore()
+{
+    for (int i = 0; i < NUM_ACHIEVEMENTS; i++)
+    {
+        if (!achievementList[i].image.empty())
+        {
+            achievementList[i].spriteData->Delete();
+        }
+    }
+    CTxdStore::RemoveTxdSlot(CTxdStore::FindTxdSlot("achievements"));
+}
+
 //TODO: a routine that checks for game loads/ new games and resets helper variables
 
 /*
@@ -231,7 +266,7 @@ void AchievementManager::CheckStatBasedAchievements()
     {
         achievementList[DISPOSING_OF_THE_EVIDENCE].unlocked = true;
         DebugHelpPrint(DISPOSING_OF_THE_EVIDENCE);
-        //TODO add to list of achievements to pop up somehow (events?)
+        AchievementUnlockPopupManager::NewAchievementUnlock(DISPOSING_OF_THE_EVIDENCE);
     }
 
     if (!achievementList[BY_A_MILE].unlocked &&
@@ -240,7 +275,7 @@ void AchievementManager::CheckStatBasedAchievements()
     {
         achievementList[BY_A_MILE].unlocked = true;
         DebugHelpPrint(BY_A_MILE);
-        //TODO add to list of achievements to pop up somehow (events?)
+        AchievementUnlockPopupManager::NewAchievementUnlock(BY_A_MILE);
     }
 
     if (!achievementList[WRECKLESS_DRIVING].unlocked &&
@@ -248,7 +283,7 @@ void AchievementManager::CheckStatBasedAchievements()
     {
         achievementList[WRECKLESS_DRIVING].unlocked = true;
         DebugHelpPrint(WRECKLESS_DRIVING);
-        //TODO add to list of achievements to pop up somehow (events?)
+        AchievementUnlockPopupManager::NewAchievementUnlock(WRECKLESS_DRIVING);
     }
 
     if (!achievementList[WHEELS_UP].unlocked &&
@@ -257,7 +292,7 @@ void AchievementManager::CheckStatBasedAchievements()
         achievementList[WHEELS_UP].unlocked = true;
         DebugHelpPrint(WHEELS_UP);
         SaveAchievements();
-        //TODO add to list of achievements to pop up somehow (events?)
+        AchievementUnlockPopupManager::NewAchievementUnlock(WHEELS_UP);
     }
 
     if (!achievementList[WHERE_TO].unlocked &&
@@ -266,7 +301,7 @@ void AchievementManager::CheckStatBasedAchievements()
         achievementList[WHERE_TO].unlocked = true;
         DebugHelpPrint(WHERE_TO);
         SaveAchievements();
-        //TODO add to list of achievements to pop up somehow (events?)
+        AchievementUnlockPopupManager::NewAchievementUnlock(WHERE_TO);
     }
 
     if (!achievementList[MAN_TOYZ].unlocked &&
@@ -278,7 +313,7 @@ void AchievementManager::CheckStatBasedAchievements()
         achievementList[MAN_TOYZ].unlocked = true;
         DebugHelpPrint(MAN_TOYZ);
         SaveAchievements();
-        //TODO add to list of achievements to pop up somehow (events?)
+        AchievementUnlockPopupManager::NewAchievementUnlock(MAN_TOYZ);
     }
     
     if (!achievementList[PLAYING_DOCTOR].unlocked &&
@@ -287,7 +322,7 @@ void AchievementManager::CheckStatBasedAchievements()
         achievementList[PLAYING_DOCTOR].unlocked = true;
         DebugHelpPrint(PLAYING_DOCTOR);
         SaveAchievements();
-        //TODO add to list of achievements to pop up somehow (events?)
+        AchievementUnlockPopupManager::NewAchievementUnlock(PLAYING_DOCTOR);
         //TODO test
     }
 
@@ -298,7 +333,7 @@ void AchievementManager::CheckStatBasedAchievements()
         achievementList[RIGHT_HAND_MAN].unlocked = true;
         DebugHelpPrint(RIGHT_HAND_MAN);
         SaveAchievements();
-        //TODO add to list of achievements to pop up somehow (events?)
+        AchievementUnlockPopupManager::NewAchievementUnlock(RIGHT_HAND_MAN);
     }
     
     if (!achievementList[LIBERTY_CITY_SECRETS].unlocked)
@@ -309,7 +344,7 @@ void AchievementManager::CheckStatBasedAchievements()
             achievementList[LIBERTY_CITY_SECRETS].unlocked = true;
             DebugHelpPrint(LIBERTY_CITY_SECRETS);
             SaveAchievements();
-            //TODO add to list of achievements to pop up somehow (events?)
+            AchievementUnlockPopupManager::NewAchievementUnlock(LIBERTY_CITY_SECRETS);
         }
     }
     
@@ -319,7 +354,7 @@ void AchievementManager::CheckStatBasedAchievements()
         achievementList[IS_THAT_ALL_YOUVE_GOT].unlocked = true;
         DebugHelpPrint(IS_THAT_ALL_YOUVE_GOT);
         SaveAchievements();
-        //TODO add to list of achievements to pop up somehow (events?)
+        AchievementUnlockPopupManager::NewAchievementUnlock(IS_THAT_ALL_YOUVE_GOT);
     }
     
     if (!achievementList[HUNTING_SEASON].unlocked &&
@@ -328,7 +363,7 @@ void AchievementManager::CheckStatBasedAchievements()
         achievementList[HUNTING_SEASON].unlocked = true;
         DebugHelpPrint(HUNTING_SEASON);
         SaveAchievements();
-        //TODO add to list of achievements to pop up somehow (events?)
+        AchievementUnlockPopupManager::NewAchievementUnlock(HUNTING_SEASON);
     }
 
     if (!achievementList[REPEAT_OFFENDER].unlocked &&
@@ -337,7 +372,7 @@ void AchievementManager::CheckStatBasedAchievements()
         achievementList[REPEAT_OFFENDER].unlocked = true;
         DebugHelpPrint(REPEAT_OFFENDER);
         SaveAchievements();
-        //TODO add to list of achievements to pop up somehow (events?)
+        AchievementUnlockPopupManager::NewAchievementUnlock(REPEAT_OFFENDER);
     }
 
     if (!achievementList[CHEATERS_DO_PROSPER].unlocked &&
@@ -346,7 +381,7 @@ void AchievementManager::CheckStatBasedAchievements()
         achievementList[CHEATERS_DO_PROSPER].unlocked = true;
         DebugHelpPrint(CHEATERS_DO_PROSPER);
         SaveAchievements();
-        //TODO add to list of achievements to pop up somehow (events?)
+        AchievementUnlockPopupManager::NewAchievementUnlock(CHEATERS_DO_PROSPER);
     }
 
     if (!achievementList[LIKE_A_BOSS].unlocked &&
@@ -355,7 +390,7 @@ void AchievementManager::CheckStatBasedAchievements()
         achievementList[LIKE_A_BOSS].unlocked = true;
         DebugHelpPrint(LIKE_A_BOSS);
         SaveAchievements();
-        //TODO add to list of achievements to pop up somehow (events?)
+        AchievementUnlockPopupManager::NewAchievementUnlock(LIKE_A_BOSS);
     }
     
     if (!achievementList[RECYCLER].unlocked &&
@@ -364,7 +399,7 @@ void AchievementManager::CheckStatBasedAchievements()
         achievementList[RECYCLER].unlocked = true;
         DebugHelpPrint(RECYCLER);
         SaveAchievements();
-        //TODO add to list of achievements to pop up somehow (events?)
+        AchievementUnlockPopupManager::NewAchievementUnlock(RECYCLER);
     }
 }
 
@@ -382,7 +417,7 @@ void AchievementManager::CheckMissionCompleteAchievements()
         achievementList[FIRST_DAY_ON_THE_JOB].unlocked = true;
         DebugHelpPrint(FIRST_DAY_ON_THE_JOB);
         SaveAchievements();
-        //TODO add to list of achievements to pop up somehow (events?)
+        AchievementUnlockPopupManager::NewAchievementUnlock(FIRST_DAY_ON_THE_JOB);
     }
 
     //A Marked Man (Last Requests)
@@ -392,7 +427,7 @@ void AchievementManager::CheckMissionCompleteAchievements()
         achievementList[A_MARKED_MAN].unlocked = true;
         DebugHelpPrint(A_MARKED_MAN);
         SaveAchievements();
-        //TODO add to list of achievements to pop up somehow (events?)
+        AchievementUnlockPopupManager::NewAchievementUnlock(A_MARKED_MAN);
     }
 
     //Offshore Delivery (A Drop in the Ocean)
@@ -402,7 +437,7 @@ void AchievementManager::CheckMissionCompleteAchievements()
         achievementList[OFFSHORE_DELIVERY].unlocked = true;
         DebugHelpPrint(OFFSHORE_DELIVERY);
         SaveAchievements();
-        //TODO add to list of achievements to pop up somehow (events?)
+        AchievementUnlockPopupManager::NewAchievementUnlock(OFFSHORE_DELIVERY);
     }
 
     //Not So Fast (The Exchange)
@@ -412,7 +447,7 @@ void AchievementManager::CheckMissionCompleteAchievements()
         achievementList[NOT_SO_FAST].unlocked = true;
         DebugHelpPrint(NOT_SO_FAST);
         SaveAchievements();
-        //TODO add to list of achievements to pop up somehow (events?)
+        AchievementUnlockPopupManager::NewAchievementUnlock(NOT_SO_FAST);
     }
 
     //A Gift From the King (Kingdom Come)
@@ -422,7 +457,7 @@ void AchievementManager::CheckMissionCompleteAchievements()
         achievementList[A_GIFT_FROM_THE_KING].unlocked = true;
         DebugHelpPrint(A_GIFT_FROM_THE_KING);
         SaveAchievements();
-        //TODO add to list of achievements to pop up somehow (events?)
+        AchievementUnlockPopupManager::NewAchievementUnlock(A_GIFT_FROM_THE_KING);
     }
 
     //Got Any Stories, Old Man? (Cipriani's Chaffeur)
@@ -432,7 +467,7 @@ void AchievementManager::CheckMissionCompleteAchievements()
         achievementList[GOT_ANY_STORIES_OLD_MAN].unlocked = true;
         DebugHelpPrint(GOT_ANY_STORIES_OLD_MAN);
         SaveAchievements();
-        //TODO add to list of achievements to pop up somehow (events?)
+        AchievementUnlockPopupManager::NewAchievementUnlock(GOT_ANY_STORIES_OLD_MAN);
     }
 
     if (!achievementList[TALKS_A_LOT].unlocked)
@@ -471,7 +506,7 @@ void AchievementManager::CheckMissionCompleteAchievements()
             achievementList[TALKS_A_LOT].unlocked = true;
             DebugHelpPrint(TALKS_A_LOT);
             SaveAchievements();
-            //TODO add to list of achievements to pop up somehow (events?)
+            AchievementUnlockPopupManager::NewAchievementUnlock(TALKS_A_LOT);
         }
     }
 }
@@ -487,7 +522,7 @@ void AchievementManager::CheckSpecialMissionAchievements()
         if (!Read4BytesFromScript(&WITHOUT_A_SCRATCH_BLOCKED))
         {
             CVehicle* pCar = CPools::ms_pVehiclePool->GetAtRef(Read4BytesFromScript(&MIKE_LIPS_CAR));
-            if (pCar && pCar->m_fHealth > 700 && !pCar->m_nVehicleFlags.bIsDamaged)
+            if (pCar && pCar->m_fvehHealth > 700 && !pCar->m_nVehicleFlags.bIsDamaged)
             {
                 //In order for this mission to fail, the car has to be dead (which makes it eventually despawn)
                 //timer has to run out
@@ -500,7 +535,7 @@ void AchievementManager::CheckSpecialMissionAchievements()
                     achievementList[WITHOUT_A_SCRATCH].unlocked = true;
                     DebugHelpPrint(WITHOUT_A_SCRATCH);
                     SaveAchievements();
-                    //TODO add to list of achievements to pop up somehow (events?)
+                    AchievementUnlockPopupManager::NewAchievementUnlock(WITHOUT_A_SCRATCH);
                 }
             }
             else
@@ -529,7 +564,7 @@ void AchievementManager::CheckSpecialMissionAchievements()
                 achievementList[MOB_BOSS].unlocked = true;
                 DebugHelpPrint(MOB_BOSS);
                 SaveAchievements();
-                //TODO add to list of achievements to pop up somehow (events?)
+                AchievementUnlockPopupManager::NewAchievementUnlock(MOB_BOSS);
             }
         }
     }
@@ -588,7 +623,7 @@ void AchievementManager::CheckSpecialMissionAchievements()
 
             if (pCar)
             {
-                if (pCar->m_fHealth > 0.0f)
+                if (pCar->m_fvehHealth > 0.0f)
                 {
                     //car and Chunky should both still alive
                     CPed* pPed = CPools::ms_pPedPool->GetAtRef(Read4BytesFromScript(&CHUNKY_PED));
@@ -609,7 +644,7 @@ void AchievementManager::CheckSpecialMissionAchievements()
                         achievementList[PLANNED_AHEAD].unlocked = true;
                         DebugHelpPrint(PLANNED_AHEAD);
                         SaveAchievements();
-                        //TODO add to list of achievements to pop up somehow (events?)
+                        AchievementUnlockPopupManager::NewAchievementUnlock(PLANNED_AHEAD);
                         Write4BytesToScript(&PA_STATE, PA_COMPLETE);
                         
                     }
@@ -648,7 +683,7 @@ void AchievementManager::CheckSpecialMissionAchievements()
                 achievementList[GOT_THIS_FIGURED_OUT].unlocked = true;
                 DebugHelpPrint(GOT_THIS_FIGURED_OUT);
                 SaveAchievements();
-                //TODO add to list of achievements to pop up somehow (events?)
+                AchievementUnlockPopupManager::NewAchievementUnlock(GOT_THIS_FIGURED_OUT);
             }
         }
         else
@@ -680,7 +715,7 @@ void AchievementManager::CheckSpecialMissionAchievements()
                     achievementList[FARE_GAME].unlocked = true;
                     DebugHelpPrint(FARE_GAME);
                     SaveAchievements();
-                    //TODO add to list of achievements to pop up somehow (events?)
+                    AchievementUnlockPopupManager::NewAchievementUnlock(FARE_GAME);
                 }
             }
             else
@@ -725,7 +760,7 @@ void AchievementManager::CheckBribeAchievement()
                         achievementList[ESCAPE_ARTIST].unlocked = true;
                         DebugHelpPrint(ESCAPE_ARTIST);
                         SaveAchievements();
-                        //TODO add to list of achievements to pop up somehow (events?)
+                        AchievementUnlockPopupManager::NewAchievementUnlock(ESCAPE_ARTIST);
                     }
                 }
             }
@@ -746,7 +781,7 @@ void AchievementManager::CheckMoneyAchievements()
         achievementList[CHASING_PAPER].unlocked = true;
         DebugHelpPrint(CHASING_PAPER);
         SaveAchievements();
-        //TODO add to list of achievements to pop up somehow (events?)
+        AchievementUnlockPopupManager::NewAchievementUnlock(CHASING_PAPER);
     }
 
     if (!achievementList[DIRTY_MONEY].unlocked &&
@@ -755,7 +790,7 @@ void AchievementManager::CheckMoneyAchievements()
         achievementList[DIRTY_MONEY].unlocked = true;
         DebugHelpPrint(DIRTY_MONEY);
         SaveAchievements();
-        //TODO add to list of achievements to pop up somehow (events?)
+        AchievementUnlockPopupManager::NewAchievementUnlock(DIRTY_MONEY);
     }
 }
 
@@ -770,7 +805,7 @@ void AchievementManager::CheckRampageAchievements()
         achievementList[INSTIGATOR].unlocked = true;
         DebugHelpPrint(INSTIGATOR);
         SaveAchievements();
-        //TODO add to list of achievements to pop up somehow (events?)
+        AchievementUnlockPopupManager::NewAchievementUnlock(INSTIGATOR);
     }
 
     if (!achievementList[BLOOD_IN_THE_STREETS].unlocked &&
@@ -779,7 +814,7 @@ void AchievementManager::CheckRampageAchievements()
         achievementList[BLOOD_IN_THE_STREETS].unlocked = true;
         DebugHelpPrint(BLOOD_IN_THE_STREETS);
         SaveAchievements();
-        //TODO add to list of achievements to pop up somehow (events?)
+        AchievementUnlockPopupManager::NewAchievementUnlock(BLOOD_IN_THE_STREETS);
     }
 }
 
@@ -794,7 +829,7 @@ void AchievementManager::CheckFiresInARow()
         achievementList[SPLISH_SPLASH].unlocked = true;
         DebugHelpPrint(SPLISH_SPLASH);
         SaveAchievements();
-        //TODO add to list of achievements to pop up somehow (events?)
+        AchievementUnlockPopupManager::NewAchievementUnlock(SPLISH_SPLASH);
     }
 
     if (!achievementList[RELIEF_PITCHER].unlocked &&
@@ -803,7 +838,7 @@ void AchievementManager::CheckFiresInARow()
         achievementList[RELIEF_PITCHER].unlocked = true;
         DebugHelpPrint(RELIEF_PITCHER);
         SaveAchievements();
-        //TODO add to list of achievements to pop up somehow (events?)
+        AchievementUnlockPopupManager::NewAchievementUnlock(RELIEF_PITCHER);
     }
 }
 
@@ -818,7 +853,7 @@ void AchievementManager::CheckCriminalsInARow()
         achievementList[GOING_ROGUE].unlocked = true;
         DebugHelpPrint(GOING_ROGUE);
         SaveAchievements();
-        //TODO add to list of achievements to pop up somehow (events?)
+        AchievementUnlockPopupManager::NewAchievementUnlock(GOING_ROGUE);
     }
 }
 
@@ -839,7 +874,7 @@ void AchievementManager::CheckFuriousFirstResponder()
         achievementList[FURIOUS_FIRST_RESPONDER].unlocked = true;
         DebugHelpPrint(FURIOUS_FIRST_RESPONDER);
         SaveAchievements();
-        //TODO add to list of achievements to pop up somehow (events?)
+        AchievementUnlockPopupManager::NewAchievementUnlock(FURIOUS_FIRST_RESPONDER);
 //TODO: test
     }
 }
@@ -856,7 +891,7 @@ void AchievementManager::CheckExportAchievements()
             achievementList[PLAY_FETCH].unlocked = true;
             DebugHelpPrint(PLAY_FETCH);
             SaveAchievements();
-            //TODO add to list of achievements to pop up somehow (events?)
+            AchievementUnlockPopupManager::NewAchievementUnlock(PLAY_FETCH);
         }
     }
 
@@ -867,7 +902,7 @@ void AchievementManager::CheckExportAchievements()
             achievementList[PEST_CONTROL].unlocked = true;
             DebugHelpPrint(PEST_CONTROL);
             SaveAchievements();
-            //TODO add to list of achievements to pop up somehow (events?)
+            AchievementUnlockPopupManager::NewAchievementUnlock(PEST_CONTROL);
         }
     }
 }
@@ -890,7 +925,7 @@ void AchievementManager::CheckGangsKillsAchievements()
             achievementList[STREET_SWEEPER].unlocked = true;
             DebugHelpPrint(STREET_SWEEPER);
             SaveAchievements();
-            //TODO add to list of achievements to pop up somehow (events?)
+            AchievementUnlockPopupManager::NewAchievementUnlock(STREET_SWEEPER);
         }
     }
 
@@ -928,7 +963,7 @@ void AchievementManager::CheckGangsKillsAchievements()
             achievementList[COME_OUT_TO_PLAY].unlocked = true;
             DebugHelpPrint(COME_OUT_TO_PLAY);
             SaveAchievements();
-            //TODO add to list of achievements to pop up somehow (events?)
+            AchievementUnlockPopupManager::NewAchievementUnlock(COME_OUT_TO_PLAY);
         }
         Write4BytesToScript(&COTP_GANG_MEMBERS_KILLED_LAST_FRAME, gangKillsThisFrame);
     }
@@ -974,7 +1009,7 @@ void AchievementManager::CheckLibertyCityMinute()
                     achievementList[LIBERTY_CITY_MINUTE].unlocked = true;
                     DebugHelpPrint(LIBERTY_CITY_MINUTE);
                     SaveAchievements();
-                    //TODO add to list of achievements to pop up somehow (events?)
+                    AchievementUnlockPopupManager::NewAchievementUnlock(LIBERTY_CITY_MINUTE);
                     Write4BytesToScript(&LCM_STATE, LCM_COMPLETE);
                 }
             }
@@ -1003,7 +1038,7 @@ void AchievementManager::CheckRoadkillAchievement()
                 achievementList[AM_WALKIN_HERE].unlocked = true;
                 DebugHelpPrint(AM_WALKIN_HERE);
                 SaveAchievements();
-                //TODO add to list of achievements to pop up somehow (events?)
+                AchievementUnlockPopupManager::NewAchievementUnlock(AM_WALKIN_HERE);
             }
         }
     }
@@ -1027,7 +1062,7 @@ void AchievementManager::CheckFullArtilleryAchievement()
                 achievementList[FULL_ARTILLERY].unlocked = true;
                 DebugHelpPrint(FULL_ARTILLERY);
                 SaveAchievements();
-                //TODO add to list of achievements to pop up somehow (events?)
+                AchievementUnlockPopupManager::NewAchievementUnlock(FULL_ARTILLERY);
             }
         }
     }
@@ -1054,7 +1089,7 @@ void AchievementManager::CheckAllAchievementsComplete()
     achievementList[KING_OF_LIBERTY_CITY].unlocked = true;
     DebugHelpPrint(KING_OF_LIBERTY_CITY);
     SaveAchievements();
-    //TODO add to list of achievements to pop up somehow (events?)
+    AchievementUnlockPopupManager::NewAchievementUnlock(KING_OF_LIBERTY_CITY);
     //TODO: test
 }
 
@@ -1068,28 +1103,6 @@ void AchievementManager::CheckForCheats()
     {
         Write4BytesToScript(&CHEAT_ASSIST, 1);
         CHud::SetHelpMessage(wcheatmessage, false);
-    }
-}
-
-static void DebugHelpPrint(int achievementID)
-{
-    if (DEBUG)
-    {
-        const char* unlockmessage = AchievementManager::achievementList[achievementID].name.c_str();
-        wchar_t* wtestmessage = new wchar_t[strlen(unlockmessage) + 1];
-        mbstowcs_s(NULL, wtestmessage, strlen(unlockmessage) + 1, unlockmessage, strlen(unlockmessage));
-        CHud::SetHelpMessage(wtestmessage, false);
-    }
-}
-
-static void DebugHelpPrint(char* message)
-{
-    if (DEBUG && CTimer::m_snTimeInMilliseconds >= debugNextPrintTime) //TODO: this doesn't reset on new/load game, so it breaks 
-    {
-        wchar_t* wtestmessage = new wchar_t[strlen(message) + 1];
-        mbstowcs_s(NULL, wtestmessage, strlen(message) + 1, message, strlen(message));
-        CHud::SetHelpMessage(wtestmessage, false);
-        debugNextPrintTime = CTimer::m_snTimeInMilliseconds + 1000;
     }
 }
 

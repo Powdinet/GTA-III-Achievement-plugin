@@ -94,12 +94,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AchievementManager.cpp" />
+    <ClCompile Include="AchievementUnlockPopupManager.cpp" />
     <ClCompile Include="GTAIIIDefinitiveAchievementsForSteam.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AchievementManager.h" />
     <ClInclude Include="AchievementMenuManager.h" />
     <ClInclude Include="AchievementUnlockPopupManager.h" />
+    <ClInclude Include="debug.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,6 +1,7 @@
 #pragma once
 using namespace std;
 #include <string.h>
+#include "CSprite2d.h"
 
 #define DEBUG true
 #define NUM_ACHIEVEMENTS 44
@@ -9,11 +10,17 @@ using namespace std;
 //TODO #define ACH_SAVE_FILE some_string
 
 struct AchievementDefinition {
-	//TODO:
 	string name;
 	string description;
-	string image; //TODO: probably raw image file imported at start of plugin
+	string image;
 	bool unlocked;
+	CSprite2d *spriteData;
+
+	AchievementDefinition()
+	{
+		unlocked = false;
+		spriteData = nullptr;
+	}
 };
 
 enum AchievementID {
@@ -147,11 +154,6 @@ static wchar_t* wcheat0 = new wchar_t[strlen(cheat0) + 1];
 static wchar_t* wcheat1 = new wchar_t[strlen(cheat1) + 1];
 static wchar_t* wcheatmessage = new wchar_t[strlen(cheatmessage) + 1];
 
-//debug print
-static void DebugHelpPrint(int achievementID);
-static void DebugHelpPrint(char* message);
-static int debugNextPrintTime;
-
 //read values from script
 static int32_t Read4BytesFromScript(uint32_t* pIp);
 static int16_t Read2BytesFromScript(uint32_t* pIp);
@@ -167,6 +169,8 @@ public:
 
 	//functions
 	static void Init();
+	static void SetupTXDStore();
+	static void RemoveTXDStore();
 	static void SaveAchievements();
 	static void ResetAchievements();
 	static void CheckAchievements();

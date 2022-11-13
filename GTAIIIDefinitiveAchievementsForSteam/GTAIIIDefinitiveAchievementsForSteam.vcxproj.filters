@@ -3,10 +3,12 @@
   <ItemGroup>
     <ClCompile Include="GTAIIIDefinitiveAchievementsForSteam.cpp" />
     <ClCompile Include="AchievementManager.cpp" />
+    <ClCompile Include="AchievementUnlockPopupManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AchievementManager.h" />
     <ClInclude Include="AchievementUnlockPopupManager.h" />
     <ClInclude Include="AchievementMenuManager.h" />
+    <ClInclude Include="debug.h" />
   </ItemGroup>
 </Project>
